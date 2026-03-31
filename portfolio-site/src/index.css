@@ -1,0 +1,369 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — Portfolio Design System
+   ============================================================ */
+
+@theme {
+  --color-bg-base: #080C10;
+  --color-bg-surface: #0D1117;
+  --color-bg-elevated: #161B22;
+  --color-border: #21262D;
+  --color-border-hover: #30363D;
+  --color-text-primary: #E6EDF3;
+  --color-text-secondary: #8B949E;
+  --color-text-muted: #484F58;
+  --color-accent-cyan: #39D0D8;
+  --color-accent-violet: #9E7CFF;
+  --color-accent-glow: rgba(57, 208, 216, 0.12);
+  --color-accent-glow-strong: rgba(57, 208, 216, 0.25);
+
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* ============================================================
+   EASING CURVES — Emil Kowalski Philosophy
+   ============================================================ */
+
+:root {
+  /* Strong ease-out for UI interactions */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  /* Strong ease-in-out for on-screen movement */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  /* iOS-like drawer curve */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ============================================================
+   GLOBAL RESETS & BASE
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: hidden;
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11.5" y="4" width="1" height="5" fill="%2339d0d8"/><rect x="11.5" y="15" width="1" height="5" fill="%2339d0d8"/><rect x="4" y="11.5" width="5" height="1" fill="%2339d0d8"/><rect x="15" y="11.5" width="5" height="1" fill="%2339d0d8"/><circle cx="12" cy="12" r="1.2" fill="%2339d0d8"/></svg>') 12 12, crosshair;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.15;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 10V6H10" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M18 10V6H14" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M6 14V18H10" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M18 14V18H14" stroke="%239e7cff" stroke-width="1.5" fill="none"/><rect x="11.2" y="11.2" width="1.6" height="1.6" fill="%239e7cff"/></svg>') 12 12, pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-cyan);
+  outline-offset: 3px;
+}
+
+button {
+  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 10V6H10" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M18 10V6H14" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M6 14V18H10" stroke="%239e7cff" stroke-width="1.5" fill="none"/><path d="M18 14V18H14" stroke="%239e7cff" stroke-width="1.5" fill="none"/><rect x="11.2" y="11.2" width="1.6" height="1.6" fill="%239e7cff"/></svg>') 12 12, pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ============================================================
+   TYPOGRAPHY SCALE
+   ============================================================ */
+
+.text-h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.text-h3 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 600;
+}
+
+.text-body {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   BUTTON SYSTEM — Emil Philosophy (scale on active)
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: transform 160ms var(--ease-out),
+              box-shadow 200ms ease,
+              border-color 200ms ease,
+              background-color 200ms ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--color-accent-cyan);
+  color: var(--color-bg-base);
+  border: 1px solid var(--color-accent-cyan);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    box-shadow: 0 0 20px var(--color-accent-glow-strong),
+                0 0 40px var(--color-accent-glow);
+  }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-elevated);
+  }
+}
+
+/* ============================================================
+   GRID PATTERN BACKGROUND — Cyberpunk-lite
+   ============================================================ */
+
+.grid-bg {
+  position: relative;
+}
+
+.grid-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.04;
+  pointer-events: none;
+  animation: gridPulse 4s ease-in-out infinite;
+}
+
+@keyframes gridPulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.06; }
+}
+
+/* ============================================================
+   SECTION CONTAINERS
+   ============================================================ */
+
+.section {
+  position: relative;
+  padding: 6rem 0;
+  background-image: radial-gradient(ellipse at center, rgba(158, 124, 255, 0.04) 0%, transparent 70%);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 3rem;
+  }
+}
+
+/* ============================================================
+   LINK HOVER — Clip-path underline reveal
+   ============================================================ */
+
+.link-reveal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 160ms var(--ease-out);
+}
+
+.link-reveal::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background: var(--color-accent-cyan);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link-reveal:hover::after {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.link-reveal:focus-visible::after {
+  clip-path: inset(0 0 0 0);
+}
+
+.project-card {
+  transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.project-link,
+.contact-link {
+  align-items: center;
+}
+
+.back-to-top {
+  transition: color 160ms var(--ease-out);
+}
+
+.back-to-top svg {
+  transition: transform 160ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover,
+  .project-card:focus-within {
+    border-color: var(--color-accent-cyan) !important;
+    box-shadow: 0 0 30px var(--color-accent-glow), 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .back-to-top:hover svg {
+    transform: translateY(-3px);
+  }
+}
+
+.project-card:focus-within {
+  border-color: var(--color-accent-cyan) !important;
+  box-shadow: 0 0 30px var(--color-accent-glow), 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+   PILL / TAG BADGES
+   ============================================================ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.pill-accent {
+  color: var(--color-accent-cyan);
+  border-color: rgba(57, 208, 216, 0.2);
+  background: rgba(57, 208, 216, 0.08);
+}
+
+/* ============================================================
+   CURSOR BLINK
+   ============================================================ */
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
+}
+
+/* ============================================================
+   REDUCED MOTION — Accessibility
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .grid-bg::before {
+    animation: none;
+    opacity: 0.04;
+  }
+}
