@@ -1,6 +1,6 @@
 # Bilal Umar — Portfolio
 
-A **cyberpunk-inspired** single-page portfolio: immersive UI, sharp HUD-style sections, and a focus on craft—built to show how I think about product, systems, and polish.
+A stylish, **cyberpunk-inspired** single-page portfolio: immersive UI, sharp HUD-style sections, and a focus on craft—built to show how I think about product, systems, and polish.
 
 ---
 
@@ -49,7 +49,9 @@ npm run preview # preview production build
 
 ## Live site
 
-After you deploy (e.g. Vercel, Netlify, GitHub Pages), add the public URL at the top of this README so visitors land on the live app.
+After you deploy (e.g. Vercel, Netlify, GitHub Pages), add the public URL here so visitors land on the live app.
+
+**Repository:** [github.com/bmar1/portfolio](https://github.com/bmar1/portfolio)
 
 ---
 
