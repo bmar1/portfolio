@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail, BriefcaseBusiness, FolderGit2, ArrowUp, Check } from 'lucide-react'
 import SectionReveal from '../components/SectionReveal'
 import StaggerText from '../components/StaggerText'
+import { GITHUB_PROFILE_URL, LINKEDIN_PROFILE_URL } from '../constants/social'
 import { getScrollBehavior } from '../utils/motion'
 
 export default function Contact() {
@@ -52,20 +53,20 @@ export default function Contact() {
                 {copied ? 'Copied!' : 'bumar@myseneca.ca'}
               </button>
               <a
-                href="https://linkedin.com/in/bmar1"
+                href={LINKEDIN_PROFILE_URL}
                 target="_blank"
-                rel="noopener"
-                className="contact-link link-reveal text-sm"
+                rel="noopener noreferrer"
+                className="contact-link link-reveal text-sm cursor-pointer"
                 style={{ color: 'var(--color-text-secondary)' }}
               >
                 <BriefcaseBusiness size={16} />
                 LinkedIn
               </a>
               <a
-                href="https://github.com/bmar1"
+                href={GITHUB_PROFILE_URL}
                 target="_blank"
-                rel="noopener"
-                className="contact-link link-reveal text-sm"
+                rel="noopener noreferrer"
+                className="contact-link link-reveal text-sm cursor-pointer"
                 style={{ color: 'var(--color-text-secondary)' }}
               >
                 <FolderGit2 size={16} />
@@ -85,6 +86,7 @@ export default function Contact() {
               © 2026 Bilal Umar · Built with React + Vite
             </span>
             <button
+              type="button"
               onClick={scrollToTop}
               className="back-to-top flex items-center gap-1 text-xs"
               style={{

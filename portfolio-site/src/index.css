@@ -183,6 +183,7 @@ img {
   position: relative;
 }
 
+/* --hero-scroll-fade: 1 at top of hero → scales down as user scrolls away (set in Hero.tsx) */
 .grid-bg::before {
   content: "";
   position: absolute;
@@ -191,14 +192,13 @@ img {
     linear-gradient(var(--color-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
   background-size: 60px 60px;
-  opacity: 0.04;
   pointer-events: none;
   animation: gridPulse 4s ease-in-out infinite;
 }
 
 @keyframes gridPulse {
-  0%, 100% { opacity: 0.03; }
-  50% { opacity: 0.06; }
+  0%, 100% { opacity: calc(0.03 * var(--hero-scroll-fade, 1)); }
+  50% { opacity: calc(0.06 * var(--hero-scroll-fade, 1)); }
 }
 
 /* ============================================================
@@ -326,6 +326,28 @@ img {
   animation: blink 1s step-end infinite;
 }
 
+/* Hero scroll hint — subtle vertical nudge */
+@keyframes heroChevronNudge {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.hero-scroll-chevron {
+  animation: heroChevronNudge 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-chevron {
+    animation: none;
+  }
+}
+
 /* ============================================================
    SCROLLBAR
    ============================================================ */
@@ -364,6 +386,6 @@ img {
 
   .grid-bg::before {
     animation: none;
-    opacity: 0.04;
+    opacity: calc(0.04 * var(--hero-scroll-fade, 1));
   }
 }

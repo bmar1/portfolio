@@ -1,96 +1,203 @@
-import { useRef, useState, useEffect } from 'react'
-import { useSpring, motion } from 'framer-motion'
-import { ArrowRight, Download } from 'lucide-react'
+import { useRef, useState, useEffect, useCallback } from 'react'
+import { useSpring, motion, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { ArrowRight, ChevronDown, Download } from 'lucide-react'
+import JarvisOrb from '../components/jarvis/JarvisOrb'
+import GithubContributionChart from '../components/GithubContributionChart'
+import GithubProofLine from '../components/GithubProofLine'
 import TerminalTyping from '../components/TerminalTyping'
 import StaggerText from '../components/StaggerText'
 import { getScrollBehavior } from '../utils/motion'
 
-const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAEYNk_xsOSL_6iW-mTQOKJxI34ZXyxPUa8LLgRSTIDamH7DzmNh3BPZOJREmd5F9gWSWMzWOmx27hmTmHHYwJt_W1qCGNoyJVRMa_KIXPBbB48lrsSXHt4jYfNFqdUttPOwPZALtQcuZaj0pcgO8NbiNM90Lf8gkd6vyeEnxuF2NBEWHmZ2cOaLsVaZTY-tE3QeEZDuwQies_6iyryv5eNI--6W_6EQexyMkS_bwl_b5hJKdAwr3dKFiih3omSd0DwPSjIqWvK62dH'
-
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [typingDone, setTypingDone] = useState(false)
+  const [bootDone, setBootDone] = useState(() =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  const [heroScrollFade, setHeroScrollFade] = useState(1)
 
-  const mouseX = useSpring(0, { stiffness: 50, damping: 20 })
-  const mouseY = useSpring(0, { stiffness: 50, damping: 20 })
+  const reducedMotionPref = useReducedMotion()
+  const reduceMotion = reducedMotionPref === true
+
+  useEffect(() => {
+    if (reduceMotion) setBootDone(true)
+  }, [reduceMotion])
+  const mouseX = useSpring(0, { stiffness: 52, damping: 14 })
+  const mouseY = useSpring(0, { stiffness: 52, damping: 14 })
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    if (reduceMotion) return
     const rect = containerRef.current?.getBoundingClientRect()
     if (!rect) return
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 78
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 68
     mouseX.set(x)
     mouseY.set(y)
   }
+
+  const updateHeroScrollFade = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const heroTop = rect.top
+    const heroHeight = rect.height
+    const scrolledPastTop = Math.max(0, -heroTop)
+    const t = Math.min(1, scrolledPastTop / (heroHeight * 0.85))
+    setHeroScrollFade(1 - t * 0.65)
+  }, [])
+
+  useEffect(() => {
+    updateHeroScrollFade()
+    window.addEventListener('scroll', updateHeroScrollFade, { passive: true })
+    window.addEventListener('resize', updateHeroScrollFade, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', updateHeroScrollFade)
+      window.removeEventListener('resize', updateHeroScrollFade)
+    }
+  }, [updateHeroScrollFade])
+
+  useEffect(() => {
+    if (!bootDone) {
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = ''
+      }
+    }
+    document.body.style.overflow = ''
+  }, [bootDone])
 
   return (
     <section
       id="hero"
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="grid-bg relative min-h-screen flex items-center overflow-hidden"
+      className="grid-bg relative min-h-screen flex items-center overflow-x-clip"
+      style={
+        {
+          '--hero-scroll-fade': String(heroScrollFade),
+        } as React.CSSProperties
+      }
     >
-      {/* Hero background image — Stitch-generated cyberpunk city */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={HERO_IMG}
-          alt=""
-          aria-hidden="true"
-          className="w-full h-full object-cover object-center"
-          style={{ opacity: 0.25 }}
-        />
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, rgba(8,12,16,0.4) 0%, var(--color-bg-base) 85%)',
+            background: `
+              radial-gradient(ellipse 85% 55% at 72% 18%, rgba(57, 208, 216, 0.09) 0%, transparent 52%),
+              radial-gradient(ellipse 55% 45% at 12% 78%, rgba(158, 124, 255, 0.07) 0%, transparent 48%),
+              linear-gradient(to bottom, rgba(8, 12, 16, 0.55) 0%, var(--color-bg-base) 88%)
+            `,
           }}
         />
       </div>
 
-      <div className="container relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center min-h-screen py-32">
-          {/* Left — Text content (60%) */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
-            <TerminalTyping onComplete={() => setTypingDone(true)} />
-
-            <div
+      {/* Full-screen boot terminal — not stacked above the headline */}
+      <AnimatePresence>
+        {!bootDone && (
+          <motion.div
+            key="boot-overlay"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center px-4 py-8"
+            initial={{ opacity: 1 }}
+            exit={{
+              opacity: 0,
+              scale: 1.03,
+              filter: reduceMotion ? 'none' : 'blur(8px)',
+            }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              background:
+                'radial-gradient(ellipse 100% 70% at 50% 35%, rgba(10, 14, 20, 0.98) 0%, rgba(5, 8, 12, 0.995) 50%, var(--color-bg-base) 100%)',
+            }}
+          >
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              initial={{ opacity: 0.35 }}
+              animate={{ opacity: 0.55 }}
+              transition={{ duration: 0.4 }}
               style={{
-                opacity: typingDone ? 1 : 0,
-                transition: 'opacity 300ms ease 200ms',
+                background:
+                  'radial-gradient(ellipse 80% 50% at 50% 40%, rgba(57, 208, 216, 0.12) 0%, transparent 60%)',
               }}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 26, delay: 0.08 }}
+              className="relative z-[1] w-full"
             >
+              <TerminalTyping onComplete={() => setBootDone(true)} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        className="container relative z-10"
+        initial={false}
+        animate={
+          bootDone
+            ? reduceMotion
+              ? { opacity: 1, y: 0 }
+              : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
+            : reduceMotion
+              ? { opacity: 0, y: 8 }
+              : { opacity: 0, y: 22, scale: 0.985, filter: 'blur(4px)' }
+        }
+        transition={
+          reduceMotion
+            ? { duration: 0.25 }
+            : {
+                type: 'spring',
+                stiffness: 300,
+                damping: 28,
+                mass: 0.85,
+                opacity: { duration: 0.4, delay: 0.12 },
+                filter: { duration: 0.5, delay: 0.1 },
+              }
+        }
+        style={{ pointerEvents: bootDone ? 'auto' : 'none' }}
+      >
+        <div className="grid grid-cols-1 gap-12 items-center min-h-screen py-32 lg:grid-cols-12 lg:gap-14">
+          <motion.div
+            className="flex min-w-0 flex-col gap-6 lg:col-span-7"
+            initial={false}
+            animate={
+              bootDone
+                ? { opacity: 1, x: 0 }
+                : { opacity: 0, x: -12 }
+            }
+            transition={
+              reduceMotion
+                ? {}
+                : { type: 'spring', stiffness: 360, damping: 32, delay: 0.18 }
+            }
+          >
+            <div>
               <StaggerText
+                key={bootDone ? 'hero-ready' : 'pre-hero'}
                 text="Building things that actually work."
                 className="text-h1"
-                initialDelay={100}
+                initialDelay={bootDone ? 120 : 0}
               />
             </div>
 
-            <p
-              className="text-body max-w-lg"
-              style={{
-                color: 'var(--color-text-secondary)',
-                opacity: typingDone ? 1 : 0,
-                transform: typingDone ? 'translateY(0)' : 'translateY(12px)',
-                transition: 'opacity 500ms cubic-bezier(0.23, 1, 0.32, 1) 600ms, transform 500ms cubic-bezier(0.23, 1, 0.32, 1) 600ms',
-              }}
-            >
-              Full-stack developer. Systems thinker.
-              <br />
-              Currently studying @ Seneca Polytechnic.
+            <p className="text-body max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+              I optimize for the work nobody screenshots — schemas, indexes, and the path data takes
+              when things go wrong.
             </p>
 
-            <div
-              className="flex flex-wrap gap-4"
-              style={{
-                opacity: typingDone ? 1 : 0,
-                transform: typingDone ? 'translateY(0)' : 'translateY(12px)',
-                transition: 'opacity 500ms cubic-bezier(0.23, 1, 0.32, 1) 800ms, transform 500ms cubic-bezier(0.23, 1, 0.32, 1) 800ms',
-              }}
-            >
+            <p className="text-body max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+              CPA @ Seneca · technical lead @ GDG Seneca · shipping Plated, Nest, and a greedy route
+              solver in production.
+            </p>
+
+            <GithubProofLine visible={bootDone} />
+
+            <div className="flex flex-wrap gap-4">
               <a
                 href="#projects"
-                className="btn btn-primary"
+                className="btn btn-primary cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault()
                   document.querySelector('#projects')?.scrollIntoView({ behavior: getScrollBehavior() })
@@ -98,186 +205,89 @@ export default function Hero() {
               >
                 View Projects <ArrowRight size={16} />
               </a>
-              <a href="/assets/resume_swe.pdf" download="Bilal_Umar_SWE_Resume.pdf" className="btn btn-ghost">
+              <a
+                href="/assets/resume_swe.pdf"
+                download="Bilal_Umar_SWE_Resume.pdf"
+                className="btn btn-ghost cursor-pointer"
+              >
                 Download Resume <Download size={16} />
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right — Interactive grid visual (40%) */}
           <motion.div
-            className="lg:col-span-2 hidden lg:flex items-center justify-center"
+            className="relative mx-auto flex w-full min-w-0 max-w-none flex-col items-center gap-8 overflow-visible lg:col-span-5 lg:mx-0"
             style={{
-              x: mouseX,
-              y: mouseY,
+              x: reduceMotion ? 0 : mouseX,
+              y: reduceMotion ? 0 : mouseY,
+              perspective: '1100px',
             }}
+            initial={false}
+            animate={
+              bootDone
+                ? { opacity: 1, x: 0 }
+                : { opacity: 0, x: 16 }
+            }
+            transition={
+              reduceMotion
+                ? {}
+                : { type: 'spring', stiffness: 340, damping: 30, delay: 0.22 }
+            }
           >
-            <InteractiveGrid />
+            <motion.div
+              className="flex items-center justify-center"
+              style={{ transformStyle: 'preserve-3d' }}
+              initial={{ rotate: 0, x: 0, y: 0, rotateX: 0, rotateY: 0 }}
+              animate={
+                reduceMotion
+                  ? false
+                  : {
+                      rotate: [0, 360],
+                      x: [0, 8, -7, 5, -6, 0],
+                      y: [0, -7, 8, -5, 4, 0],
+                      rotateY: [4, -7, 5, -6, 4],
+                      rotateX: [-5, 7, -4, 6, -5],
+                    }
+              }
+              transition={{
+                rotate: { repeat: Infinity, duration: 70, ease: 'linear' },
+                x: { repeat: Infinity, duration: 12, ease: 'easeInOut' },
+                y: { repeat: Infinity, duration: 13, ease: 'easeInOut' },
+                rotateY: { repeat: Infinity, duration: 10, ease: 'easeInOut' },
+                rotateX: { repeat: Infinity, duration: 11, ease: 'easeInOut' },
+              }}
+            >
+              <div className="aspect-square w-[min(100%,560px)] shrink-0 overflow-visible">
+                <JarvisOrb animate={!reduceMotion && bootDone} />
+              </div>
+            </motion.div>
+
+            <div className="mt-8 w-full self-center">
+              <GithubContributionChart />
+            </div>
           </motion.div>
         </div>
-      </div>
+
+        {bootDone && (
+          <button
+            type="button"
+            className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 border-0 bg-transparent p-2 text-mono text-xs focus-visible:outline-2 focus-visible:outline-offset-4"
+            style={{
+              color: 'var(--color-text-muted)',
+              outlineColor: 'var(--color-accent-cyan)',
+            }}
+            onClick={() =>
+              document
+                .querySelector('#projects')
+                ?.scrollIntoView({ behavior: getScrollBehavior() })
+            }
+            aria-label="Scroll to projects"
+          >
+            <span>What ships next</span>
+            <ChevronDown size={18} aria-hidden className="hero-scroll-chevron" />
+          </button>
+        )}
+      </motion.div>
     </section>
-  )
-}
-
-/* Interactive Physics dot grid */
-function InteractiveGrid() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d', { alpha: true })
-    if (!ctx) return
-
-    let animationFrameId: number
-    const cols = 14
-    const rows = 14
-    const spacing = 26
-    const width = cols * spacing
-    const height = rows * spacing
-
-    // Setup high-DPI canvas
-    const dpr = window.devicePixelRatio || 1
-    canvas.width = width * dpr
-    canvas.height = height * dpr
-    canvas.style.width = '100%'
-    canvas.style.maxWidth = `${width}px`
-    canvas.style.aspectRatio = '1 / 1'
-    ctx.scale(dpr, dpr)
-
-    interface Particle {
-      x: number
-      y: number
-      baseX: number
-      baseY: number
-      vx: number
-      vy: number
-      opacity: number
-    }
-
-    const particles: Particle[] = []
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const baseX = c * spacing + spacing / 2
-        const baseY = r * spacing + spacing / 2
-        
-        // Fade out edges
-        const distFromCenter = Math.sqrt(Math.pow(c - cols / 2, 2) + Math.pow(r - rows / 2, 2))
-        const maxDist = Math.sqrt(Math.pow(cols / 2, 2) + Math.pow(rows / 2, 2))
-        const opacity = 0.1 + (1 - distFromCenter / maxDist) * 0.6
-
-        particles.push({
-          x: baseX,
-          y: baseY,
-          baseX,
-          baseY,
-          vx: 0,
-          vy: 0,
-          opacity: Math.max(0, opacity),
-        })
-      }
-    }
-
-    const mouse = { x: -1000, y: -1000, radius: 80 }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      // Mapping screen pixels to canvas logical pixels
-      const scaleX = width / rect.width
-      const scaleY = height / rect.height
-      mouse.x = (e.clientX - rect.left) * scaleX
-      mouse.y = (e.clientY - rect.top) * scaleY
-    }
-
-    const handleMouseLeave = () => {
-      mouse.x = -1000
-      mouse.y = -1000
-    }
-
-    canvas.addEventListener('mousemove', handleMouseMove)
-    canvas.addEventListener('mouseleave', handleMouseLeave)
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height)
-
-      // Physics integration
-      for (const p of particles) {
-        const dx = mouse.x - p.x
-        const dy = mouse.y - p.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-
-        if (dist < mouse.radius) {
-          const force = (mouse.radius - dist) / mouse.radius
-          const angle = Math.atan2(dy, dx)
-          // Repel outward
-          p.vx -= Math.cos(angle) * force * 2.5
-          p.vy -= Math.sin(angle) * force * 2.5
-        }
-
-        // Return forces
-        p.vx += (p.baseX - p.x) * 0.08
-        p.vy += (p.baseY - p.y) * 0.08
-
-        // Friction
-        p.vx *= 0.75
-        p.vy *= 0.75
-
-        p.x += p.vx
-        p.y += p.vy
-      }
-
-      // Draw mesh connections
-      ctx.lineWidth = 0.8
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = particles[i]
-        
-        ctx.strokeStyle = `rgba(57, 208, 216, ${p1.opacity * 0.3})`
-        
-        // Right neighbor
-        if ((i + 1) % cols !== 0) {
-          const p2 = particles[i + 1]
-          ctx.beginPath()
-          ctx.moveTo(p1.x, p1.y)
-          ctx.lineTo(p2.x, p2.y)
-          ctx.stroke()
-        }
-        
-        // Bottom neighbor
-        if (i + cols < particles.length) {
-          const p2 = particles[i + cols]
-          ctx.beginPath()
-          ctx.moveTo(p1.x, p1.y)
-          ctx.lineTo(p2.x, p2.y)
-          ctx.stroke()
-        }
-      }
-
-      // Draw dots
-      for (const p of particles) {
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(57, 208, 216, ${p.opacity})`
-        ctx.fill()
-      }
-
-      animationFrameId = window.requestAnimationFrame(render)
-    }
-
-    render()
-
-    return () => {
-      window.cancelAnimationFrame(animationFrameId)
-      canvas.removeEventListener('mousemove', handleMouseMove)
-      canvas.removeEventListener('mouseleave', handleMouseLeave)
-    }
-  }, [])
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="cursor-crosshair transition-opacity duration-1000"
-      style={{ filter: 'drop-shadow(0 0 16px rgba(57, 208, 216, 0.2))' }}
-    />
   )
 }

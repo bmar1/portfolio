@@ -50,13 +50,15 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Desktop pill */}
+      {/* Desktop pill — visible after leaving hero (PRD §6) */}
       <nav
+        inert={!pastHero}
         style={{
-          opacity: 1,
-          transform: 'translateY(0)',
-          transition: 'transform 200ms cubic-bezier(0.23, 1, 0.32, 1)',
-          pointerEvents: 'auto',
+          opacity: pastHero ? 1 : 0,
+          transform: pastHero ? 'translateY(0)' : 'translateY(-8px)',
+          transition:
+            'opacity 200ms ease, transform 200ms cubic-bezier(0.23, 1, 0.32, 1)',
+          pointerEvents: pastHero ? 'auto' : 'none',
         }}
         className="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden md:flex items-center gap-2 px-3 py-2 rounded-full border border-[var(--color-border)] backdrop-blur-xl shadow-lg"
         role="navigation"
@@ -66,7 +68,7 @@ export default function Navbar() {
         <a
           href="#hero"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-          className="px-4 py-1.5 text-sm font-semibold transition-colors hover:text-white"
+          className="px-4 py-1.5 text-sm font-semibold transition-colors hover:text-white cursor-pointer"
           style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-accent-cyan)' }}
         >
           bumar
@@ -79,7 +81,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={(e) => { e.preventDefault(); handleClick(link.href) }}
-              className={`px-4 py-1.5 text-sm rounded-full transition-all duration-200 ${isActive ? 'bg-white/5' : 'hover:bg-white/5 hover:text-white'}`}
+              className={`px-4 py-1.5 text-sm rounded-full transition-all duration-200 cursor-pointer ${isActive ? 'bg-white/5' : 'hover:bg-white/5 hover:text-white'}`}
               style={{
                 color: isActive ? 'var(--color-accent-cyan)' : 'var(--color-text-secondary)',
                 fontFamily: 'var(--font-body)',
