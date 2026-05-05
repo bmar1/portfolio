@@ -69,9 +69,9 @@ export default function App() {
         <main>
           <Hero />
           <About />
+          <Experience />
           <Projects />
           <Skills />
-          <Experience />
           <OffGrid />
           <Contact />
         </main>

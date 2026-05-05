@@ -12,10 +12,22 @@ interface ExperienceNode {
 
 const EXPERIENCE: ExperienceNode[] = [
   {
+    title: 'Software Engineer',
+    org: 'Liza Bilal Enterprise Inc.',
+    period: 'Dec 2025 – Apr 2026',
+    isCurrent: true,
+    bullets: [
+      'Developed and launched client-facing website on AWS using JavaScript, HTML, and CSS, establishing online presence and reaching 200+ customers',
+      'Built internal REST API using Express.js to automate report generation, replacing a manual process, saving 3+ hours of weekly administrative work',
+      'Improved page load performance by 22% through image compression, lazy loading, and asset minification, reducing initial load time by 11%',
+      'Cut implementation time by 2 days per sprint by integrating Codex to generate boilerplate and scaffold full-stack features',
+    ],
+  },
+  {
     title: 'Technical Lead',
     org: 'Google Developers Group at Seneca Polytechnic',
     period: 'Dec 2025 – Present',
-    isCurrent: true,
+    isCurrent: false,
     bullets: [
       'Led technical workshops for 50+ students covering development concepts and real-world problem solving',
       'Mentored 25+ students through data structures/algorithms and LeetCode strategies',
