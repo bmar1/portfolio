@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Lenis from 'lenis'
 import Navbar from './components/Navbar'
 import Hero from './sections/Hero'
@@ -8,14 +8,10 @@ import Skills from './sections/Skills'
 import Experience from './sections/Experience'
 import OffGrid from './sections/OffGrid'
 import Contact from './sections/Contact'
-import TerminalLoader from './components/TerminalLoader'
 
 export default function App() {
-  const [booting, setBooting] = useState(true)
-
   useEffect(() => {
-    // Only init smooth scroll after boot sequence finishes
-    if (booting || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return
     }
 
@@ -40,7 +36,7 @@ export default function App() {
       cancelAnimationFrame(rafId)
       lenis.destroy()
     }
-  }, [booting])
+  }, [])
 
   return (
     <>
@@ -55,23 +51,15 @@ export default function App() {
         }
       `}</style>
 
-      {booting && <TerminalLoader onComplete={() => setBooting(false)} />}
-      
-      {!booting && <Navbar />}
+      <Navbar />
 
-      {/* Hide overflow while booting to prevent early scrolling */}
-      <div 
-        className={!booting ? "animate-app-pop" : "opacity-0"}
-        style={{ 
-        height: booting ? '100vh' : 'auto', 
-        overflow: booting ? 'hidden' : 'visible'
-      }}>
+      <div className="animate-app-pop">
         <main>
           <Hero />
+          <Experience />
           <About />
           <Projects />
           <Skills />
-          <Experience />
           <OffGrid />
           <Contact />
         </main>

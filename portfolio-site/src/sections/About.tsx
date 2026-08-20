@@ -1,11 +1,16 @@
-import { MapPin, GraduationCap, Wrench, Lightbulb } from 'lucide-react'
 import SectionReveal from '../components/SectionReveal'
 
+const STATEMENT = [
+  'I do the boring half.',
+  'Adapter layers. Schema migrations.',
+  'The pipeline that breaks at 2am.',
+]
+
 const FACTS = [
-  { icon: MapPin, label: 'Toronto, ON' },
-  { icon: GraduationCap, label: 'Seneca Polytechnic — CPA, 2024–Present' },
-  { icon: Wrench, label: 'Currently leading @ GDG Seneca' },
-  { icon: Lightbulb, label: 'Open to internships' },
+  { k: 'Base', v: 'Toronto, ON' },
+  { k: 'School', v: "Seneca Polytechnic — CPA, Aug '27" },
+  { k: 'Leading', v: 'AWS Student Builders' },
+  { k: 'Status', v: "Open — Winter '27" },
 ]
 
 export default function About() {
@@ -13,80 +18,101 @@ export default function About() {
     <section id="about" className="section">
       <div className="container">
         <SectionReveal>
-          <span className="text-mono" style={{ color: 'var(--color-text-muted)' }}>
-            // about me
+          <span
+            className="text-mono"
+            style={{
+              color: 'var(--color-neon-cyan)',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              fontSize: '0.72rem',
+            }}
+          >
+            <span style={{ color: 'var(--color-text-muted)' }}>[</span>
+            {' '}OPERATOR{' '}
+            <span style={{ color: 'var(--color-neon-magenta)' }}>// 02</span>
+            {' '}
+            <span style={{ color: 'var(--color-text-muted)' }}>]</span>
           </span>
         </SectionReveal>
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Left — Bio */}
-          <SectionReveal delay={100}>
-            <div className="flex flex-col gap-6">
-              <h2 className="text-h2" style={{ color: 'var(--color-text-primary)' }}>
-                Who I am
+        {/* Oversized statement — the whole section leads with type, no cards */}
+        <div className="mt-10 flex flex-col gap-1">
+          {STATEMENT.map((line, i) => (
+            <SectionReveal key={line} delay={i * 90}>
+              <h2
+                className="text-h2"
+                style={{
+                  color: i === 0 ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                  maxWidth: '18ch',
+                  lineHeight: 1.12,
+                }}
+              >
+                {line}
               </h2>
-              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '540px' }}>
-                I'm a Computer Programming & Analysis student at Seneca Polytechnic focusing 
-                on full-stack development. Whether it's Java Spring Boot, React, or C#, I care about the parts nobody notices: the normalization layer that reconciles messy APIs, the index that halves page load time, or an error message that actually helps. 
-              </p>
-              <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '540px' }}>
-                I believe in shipping working software with solid guardrails—because solving the foundational problems nobody wants to touch is usually where the most meaningful improvements hide. I'm also currently leading technical workshops at GDG Seneca, mentoring 25+ students through DSA strategies.
-              </p>
+            </SectionReveal>
+          ))}
+        </div>
 
-              {/* Sidebar facts */}
-              <div className="flex flex-col gap-3 mt-4">
-                {FACTS.map((fact, i) => (
-                  <SectionReveal key={fact.label} delay={300 + i * 60}>
-                    <div className="flex items-center gap-3">
-                      <fact.icon size={16} style={{ color: 'var(--color-accent-cyan)' }} />
-                      <span className="text-mono" style={{ color: 'var(--color-text-secondary)' }}>
-                        {fact.label}
-                      </span>
-                    </div>
-                  </SectionReveal>
-                ))}
-              </div>
-            </div>
+        <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          <SectionReveal delay={120} className="lg:col-span-7">
+            <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '52ch' }}>
+              Squashed three platform APIs into one posting service at Sikh Sparks. Got Plated up to
+              86% coverage. Government systems next. It's the same job every time, really — make the
+              messy part boring.
+            </p>
           </SectionReveal>
 
-          {/* Right — Skewed card */}
-          <SectionReveal delay={250} direction="left">
-            <div
-              className="relative p-8 flex flex-col justify-center"
+          {/* Pull quote — magenta rule instead of a card */}
+          <SectionReveal delay={220} direction="left" className="lg:col-span-5">
+            <blockquote
               style={{
-                clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0% 100%)',
-                background: 'var(--color-bg-surface)',
-                minHeight: '320px',
+                borderLeft: '2px solid var(--color-neon-magenta)',
+                paddingLeft: '1.25rem',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(1.05rem, 1.7vw, 1.35rem)',
+                fontWeight: 500,
+                lineHeight: 1.45,
+                color: 'var(--color-text-primary)',
               }}
             >
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(57, 208, 216, 0.04), rgba(158, 124, 255, 0.04))',
-                }}
-              />
-              <blockquote
-                className="relative z-10"
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
-                  fontWeight: 500,
-                  lineHeight: 1.5,
-                  color: 'var(--color-text-primary)',
-                  padding: '1.5rem 1rem',
-                }}
-              >
-                "The boring infrastructure nobody wants to touch is often where the most meaningful 
-                improvements hide."
-              </blockquote>
-              <p
-                className="relative z-10 text-mono mt-2"
-                style={{ color: 'var(--color-text-muted)', paddingLeft: '1rem' }}
-              >
-                — from a cover letter that landed interviews
-              </p>
-            </div>
+              "The boring infrastructure nobody wants to touch is usually where the good
+              improvements are hiding."
+            </blockquote>
+            <p className="text-mono mt-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.72rem', paddingLeft: '1.25rem' }}>
+              — something I actually wrote in a cover letter
+            </p>
           </SectionReveal>
+        </div>
+
+        {/* Fact rail — four hairline columns, no boxes */}
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
+          {FACTS.map((fact, i) => (
+            <SectionReveal key={fact.k} delay={i * 70} direction="up">
+              <div className="rule-row pt-4 pb-5 h-full">
+                <span
+                  className="text-mono block"
+                  style={{
+                    color: 'var(--color-neon-cyan)',
+                    fontSize: '0.66rem',
+                    letterSpacing: '0.16em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {fact.k}
+                </span>
+                <span
+                  className="block mt-1.5"
+                  style={{
+                    color: 'var(--color-text-primary)',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  {fact.v}
+                </span>
+              </div>
+            </SectionReveal>
+          ))}
         </div>
       </div>
     </section>

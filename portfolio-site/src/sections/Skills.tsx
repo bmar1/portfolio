@@ -1,182 +1,91 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
 import SectionReveal from '../components/SectionReveal'
 
-interface Skill {
-  name: string
-  context: string
-}
+type Tone = 'is-cyan' | 'is-magenta' | 'is-amber' | ''
 
-interface SkillCategory {
-  label: string
-  skills: Skill[]
-}
-
-const CATEGORIES: SkillCategory[] = [
-  {
-    label: 'Languages',
-    skills: [
-      { name: 'Java', context: 'Spring Boot backend on Plated + Route Opt.' },
-      { name: 'JavaScript', context: 'React frontends, Node.js services' },
-      { name: 'C#', context: 'Currently learning for .NET stack' },
-      { name: 'C++', context: 'Route optimization test strategy' },
-      { name: 'C', context: 'Greedy shortest-path algorithm' },
-      { name: 'HTML', context: 'Semantic, accessible markup' },
-      { name: 'CSS', context: 'Design systems, animations, Tailwind' },
-    ],
-  },
-  {
-    label: 'Frameworks',
-    skills: [
-      { name: 'Spring Boot', context: 'Plated + Nest backends' },
-      { name: '.NET', context: 'Learning for enterprise stack' },
-      { name: 'React.js', context: 'Primary frontend framework' },
-      { name: 'Node.js', context: 'Express.js API servers' },
-      { name: 'Express.js', context: 'REST API development' },
-      { name: 'JUnit', context: '86% test coverage on Plated' },
-      { name: 'Mockito', context: 'Unit testing with mocks' },
-    ],
-  },
-  {
-    label: 'Cloud & DevOps',
-    skills: [
-      { name: 'AWS', context: 'EC2, RDS, S3 for Plated hosting' },
-      { name: 'Docker', context: 'Containerized deployments' },
-      { name: 'GitHub Actions', context: 'CI/CD pipelines' },
-    ],
-  },
-  {
-    label: 'Tools',
-    skills: [
-      { name: 'Git', context: 'Version control, branching strategies' },
-      { name: 'Jira', context: 'Sprint planning, Agile workflows' },
-      { name: 'Postman', context: 'API testing & documentation' },
-      { name: 'Cursor', context: 'AI-assisted development' },
-      { name: 'Claude Code', context: 'AI pair programming' },
-    ],
-  },
-  {
-    label: 'Databases',
-    skills: [
-      { name: 'PostgreSQL', context: 'Primary DB, indexing, optimization' },
-      { name: 'Oracle', context: 'Enterprise SQL experience' },
-      { name: 'MongoDB', context: 'NoSQL document storage' },
-    ],
-  },
+/* Tone loosely groups by family (languages cyan, frameworks magenta,
+   infra amber, data/tools neutral) without imposing a grid. */
+const STICKERS: { name: string; tone: Tone }[] = [
+  { name: 'Java', tone: 'is-cyan' },
+  { name: 'Spring Boot', tone: 'is-magenta' },
+  { name: 'TypeScript', tone: 'is-cyan' },
+  { name: 'Docker', tone: 'is-amber' },
+  { name: 'React', tone: 'is-magenta' },
+  { name: 'PostgreSQL', tone: '' },
+  { name: 'Kubernetes', tone: 'is-amber' },
+  { name: 'JavaScript', tone: 'is-cyan' },
+  { name: 'Node.js', tone: 'is-magenta' },
+  { name: 'AWS EC2', tone: 'is-amber' },
+  { name: 'MongoDB', tone: '' },
+  { name: 'Express.js', tone: 'is-magenta' },
+  { name: 'GKE', tone: 'is-amber' },
+  { name: 'C', tone: 'is-cyan' },
+  { name: 'JUnit', tone: 'is-magenta' },
+  { name: 'AWS RDS', tone: 'is-amber' },
+  { name: 'Oracle', tone: '' },
+  { name: 'C++', tone: 'is-cyan' },
+  { name: 'Jest', tone: 'is-magenta' },
+  { name: 'GitHub Actions', tone: 'is-amber' },
+  { name: 'Git', tone: '' },
+  { name: 'HTML', tone: 'is-cyan' },
+  { name: 'Jira', tone: '' },
+  { name: 'CSS', tone: 'is-cyan' },
+  { name: 'Mockito', tone: 'is-magenta' },
+  { name: 'Cursor', tone: '' },
+  { name: 'VSCode', tone: '' },
+  { name: 'Claude', tone: '' },
 ]
+
+/* Fixed pseudo-random scatter — stable across renders, no layout jitter */
+const TILTS = [-5, 3, -2, 6, -4, 2, 5, -6, 1, -3, 4, -1]
+const RISES = [0, 6, -4, 8, -2, 4, -6, 2, 5, -3, 7, -5]
 
 export default function Skills() {
   return (
     <section id="skills" className="section">
       <div className="container">
         <SectionReveal>
-          <span className="text-mono" style={{ color: 'var(--color-text-muted)' }}>
-            // tech stack
+          <span
+            className="text-mono"
+            style={{
+              color: 'var(--color-neon-cyan)',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              fontSize: '0.72rem',
+            }}
+          >
+            <span style={{ color: 'var(--color-text-muted)' }}>[</span>
+            {' '}STACK{' '}
+            <span style={{ color: 'var(--color-neon-magenta)' }}>// 04</span>
+            {' '}
+            <span style={{ color: 'var(--color-text-muted)' }}>]</span>
           </span>
-          <h2 className="text-h2 mt-3">Skills & Stack</h2>
+          <h2 className="text-h2 mt-3">Things I reach for</h2>
+          <p className="text-body mt-3" style={{ color: 'var(--color-text-secondary)', maxWidth: '46ch' }}>
+            No progress bars, no "expert" badges — just what I actually build with.
+          </p>
         </SectionReveal>
 
-        <div className="mt-16 relative">
-          {/* Card grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {CATEGORIES.map((cat, ci) => (
-              <SectionReveal key={cat.label} delay={ci * 80} direction="up">
-                <div 
-                  className="flex flex-col gap-5 p-6 rounded-xl h-full transition-transform hover:-translate-y-1"
-                  style={{
-                    background: 'rgba(13, 17, 23, 0.6)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
-                  }}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="text-mono text-sm font-semibold uppercase tracking-wider"
-                      style={{ color: 'var(--color-text-primary)' }}
-                    >
-                      {cat.label}
-                    </span>
-                    <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(57, 208, 216, 0.3), transparent)' }} />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {cat.skills.map((skill, si) => (
-                      <SkillPill key={skill.name} skill={skill} delay={ci * 80 + si * 30} />
-                    ))}
-                  </div>
-                </div>
-              </SectionReveal>
+        {/* Sticker wall — no rows, no columns, everything slightly crooked */}
+        <SectionReveal delay={120}>
+          <div
+            className="mt-12 flex flex-wrap justify-center items-center"
+            style={{ gap: '0.9rem 0.75rem', maxWidth: '58rem', margin: '3rem auto 0' }}
+          >
+            {STICKERS.map((s, i) => (
+              <span
+                key={s.name}
+                className={`sticker ${s.tone}`}
+                style={{
+                  ['--tilt' as string]: `${TILTS[i % TILTS.length]}deg`,
+                  ['--rise' as string]: `${RISES[i % RISES.length]}px`,
+                }}
+              >
+                {s.name}
+              </span>
             ))}
           </div>
-        </div>
+        </SectionReveal>
       </div>
     </section>
-  )
-}
-
-function SkillPill({ skill, delay }: { skill: Skill; delay: number }) {
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [visible, setVisible] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  const show = useCallback(() => setShowTooltip(true), [])
-  const hide = useCallback(() => setShowTooltip(false), [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
-
-  return (
-    <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(12px)',
-        transition: `opacity 300ms cubic-bezier(0.23, 1, 0.32, 1), transform 300ms cubic-bezier(0.23, 1, 0.32, 1)`,
-      }}
-    >
-      <span
-        className="pill cursor-default transition-all duration-150"
-        style={{
-          boxShadow: showTooltip ? '0 0 12px var(--color-accent-glow)' : 'none',
-          borderColor: showTooltip ? 'rgba(57, 208, 216, 0.3)' : undefined,
-        }}
-      >
-        {skill.name}
-      </span>
-
-      {/* Tooltip */}
-      {showTooltip && (
-        <div
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-lg z-20 whitespace-nowrap"
-          style={{
-            background: 'var(--color-bg-elevated)',
-            border: '1px solid var(--color-border)',
-            color: 'var(--color-text-secondary)',
-            fontSize: '0.75rem',
-            fontFamily: 'var(--font-mono)',
-            animation: 'tooltipIn 150ms cubic-bezier(0.23, 1, 0.32, 1)',
-            transformOrigin: 'bottom center',
-          }}
-        >
-          {skill.context}
-        </div>
-      )}
-
-      <style>{`
-        @keyframes tooltipIn {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-          }
-        }
-      `}</style>
-    </div>
   )
 }

@@ -1,27 +1,32 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { useSpring, motion, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { useSpring, motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, ChevronDown, Download } from 'lucide-react'
 import JarvisOrb from '../components/jarvis/JarvisOrb'
 import GithubContributionChart from '../components/GithubContributionChart'
 import GithubProofLine from '../components/GithubProofLine'
-import TerminalTyping from '../components/TerminalTyping'
 import StaggerText from '../components/StaggerText'
+import HudFrame from '../components/HudFrame'
 import { getScrollBehavior } from '../utils/motion'
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [bootDone, setBootDone] = useState(() =>
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
   const [heroScrollFade, setHeroScrollFade] = useState(1)
+  const [clock, setClock] = useState(() => {
+    const d = new Date()
+    return d.toTimeString().slice(0, 8)
+  })
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      const d = new Date()
+      setClock(d.toTimeString().slice(0, 8))
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [])
 
   const reducedMotionPref = useReducedMotion()
   const reduceMotion = reducedMotionPref === true
 
-  useEffect(() => {
-    if (reduceMotion) setBootDone(true)
-  }, [reduceMotion])
   const mouseX = useSpring(0, { stiffness: 52, damping: 14 })
   const mouseY = useSpring(0, { stiffness: 52, damping: 14 })
 
@@ -56,16 +61,6 @@ export default function Hero() {
     }
   }, [updateHeroScrollFade])
 
-  useEffect(() => {
-    if (!bootDone) {
-      document.body.style.overflow = 'hidden'
-      return () => {
-        document.body.style.overflow = ''
-      }
-    }
-    document.body.style.overflow = ''
-  }, [bootDone])
-
   return (
     <section
       id="hero"
@@ -78,71 +73,74 @@ export default function Hero() {
         } as React.CSSProperties
       }
     >
-      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
+      <div className="photo-bed" aria-hidden>
+        <img
+          src="/assets/city.jpg"
+          alt=""
+          fetchPriority="high"
+          style={{ opacity: 0.55, filter: 'saturate(1.2) contrast(1.05)' }}
+        />
         <div
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(ellipse 85% 55% at 72% 18%, rgba(57, 208, 216, 0.09) 0%, transparent 52%),
-              radial-gradient(ellipse 55% 45% at 12% 78%, rgba(158, 124, 255, 0.07) 0%, transparent 48%),
-              linear-gradient(to bottom, rgba(8, 12, 16, 0.55) 0%, var(--color-bg-base) 88%)
+              radial-gradient(ellipse 85% 55% at 72% 18%, rgba(64, 224, 230, 0.14) 0%, transparent 52%),
+              radial-gradient(ellipse 60% 50% at 8% 82%, rgba(255, 90, 200, 0.12) 0%, transparent 50%),
+              linear-gradient(to bottom, rgba(8, 12, 16, 0.86) 0%, rgba(8, 12, 16, 0.74) 42%, var(--color-bg-base) 94%)
             `,
           }}
         />
       </div>
 
-      {/* Full-screen boot terminal — not stacked above the headline */}
-      <AnimatePresence>
-        {!bootDone && (
-          <motion.div
-            key="boot-overlay"
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center px-4 py-8"
-            initial={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              scale: 1.03,
-              filter: reduceMotion ? 'none' : 'blur(8px)',
-            }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      {/* HUD status readout — top-left, real values only */}
+      <div
+        className="hidden md:flex absolute top-24 left-6 lg:left-12 z-10 flex-col gap-1 pointer-events-none"
+        style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.65rem',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'var(--color-text-muted)',
+          opacity: heroScrollFade,
+          transition: 'opacity 200ms ease',
+        }}
+        aria-hidden
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-block"
             style={{
-              background:
-                'radial-gradient(ellipse 100% 70% at 50% 35%, rgba(10, 14, 20, 0.98) 0%, rgba(5, 8, 12, 0.995) 50%, var(--color-bg-base) 100%)',
+              width: 6,
+              height: 6,
+              background: 'var(--color-neon-cyan)',
+              boxShadow: '0 0 8px var(--color-neon-cyan)',
+              animation: 'ledBlink 2s ease-in-out infinite',
             }}
-          >
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              initial={{ opacity: 0.35 }}
-              animate={{ opacity: 0.55 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                background:
-                  'radial-gradient(ellipse 80% 50% at 50% 40%, rgba(57, 208, 216, 0.12) 0%, transparent 60%)',
-              }}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 280, damping: 26, delay: 0.08 }}
-              className="relative z-[1] w-full"
-            >
-              <TerminalTyping onComplete={() => setBootDone(true)} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          />
+          <span style={{ color: 'var(--color-neon-cyan)' }}>SYS</span>
+          <span>STATUS: ONLINE</span>
+        </div>
+        <div style={{ paddingLeft: 14 }}>
+          LAT 43.6532° N · LON 79.3832° W
+        </div>
+        <div style={{ paddingLeft: 14 }}>
+          T:{' '}
+          <span style={{ color: 'var(--color-neon-magenta)' }}>{clock}</span>{' '}
+          EST
+        </div>
+      </div>
 
       <motion.div
         className="container relative z-10"
-        initial={false}
+        initial={
+          reduceMotion
+            ? { opacity: 0, y: 8 }
+            : { opacity: 0, y: 22, scale: 0.985, filter: 'blur(4px)' }
+        }
         animate={
-          bootDone
-            ? reduceMotion
-              ? { opacity: 1, y: 0 }
-              : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
-            : reduceMotion
-              ? { opacity: 0, y: 8 }
-              : { opacity: 0, y: 22, scale: 0.985, filter: 'blur(4px)' }
+          reduceMotion
+            ? { opacity: 1, y: 0 }
+            : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }
         }
         transition={
           reduceMotion
@@ -156,43 +154,37 @@ export default function Hero() {
                 filter: { duration: 0.5, delay: 0.1 },
               }
         }
-        style={{ pointerEvents: bootDone ? 'auto' : 'none' }}
       >
         <div className="grid grid-cols-1 gap-12 items-center min-h-screen py-32 lg:grid-cols-12 lg:gap-14">
           <motion.div
             className="flex min-w-0 flex-col gap-6 lg:col-span-7"
-            initial={false}
-            animate={
-              bootDone
-                ? { opacity: 1, x: 0 }
-                : { opacity: 0, x: -12 }
-            }
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={
               reduceMotion
                 ? {}
                 : { type: 'spring', stiffness: 360, damping: 32, delay: 0.18 }
             }
           >
-            <div>
+            <div className="glitch-text" data-text="Building things that actually work.">
               <StaggerText
-                key={bootDone ? 'hero-ready' : 'pre-hero'}
                 text="Building things that actually work."
                 className="text-h1"
-                initialDelay={bootDone ? 120 : 0}
+                initialDelay={120}
               />
             </div>
 
-            <p className="text-body max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
-              I optimize for the work nobody screenshots — schemas, indexes, and the path data takes
-              when things go wrong.
+            <p className="text-body max-w-md" style={{ color: 'var(--color-text-secondary)' }}>
+              Full-stack dev in Toronto. I like the boring parts nobody screenshots.
             </p>
 
-            <p className="text-body max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
-              CPA @ Seneca · technical lead @ GDG Seneca · shipping Plated, Nest, and a greedy route
-              solver in production.
-            </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="pill">Seneca CPA · '27</span>
+              <span className="pill pill-accent">SWE Co-op @ OPS · Fall '26</span>
+              <span className="pill">GDG President</span>
+            </div>
 
-            <GithubProofLine visible={bootDone} />
+            <GithubProofLine visible />
 
             <div className="flex flex-wrap gap-4">
               <a
@@ -206,7 +198,7 @@ export default function Hero() {
                 View Projects <ArrowRight size={16} />
               </a>
               <a
-                href="/assets/resume_swe.pdf"
+                href="/assets/Bilal_Umar_Resume_SWE.pdf"
                 download="Bilal_Umar_SWE_Resume.pdf"
                 className="btn btn-ghost cursor-pointer"
               >
@@ -222,12 +214,8 @@ export default function Hero() {
               y: reduceMotion ? 0 : mouseY,
               perspective: '1100px',
             }}
-            initial={false}
-            animate={
-              bootDone
-                ? { opacity: 1, x: 0 }
-                : { opacity: 0, x: 16 }
-            }
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={
               reduceMotion
                 ? {}
@@ -258,35 +246,40 @@ export default function Hero() {
               }}
             >
               <div className="aspect-square w-[min(100%,560px)] shrink-0 overflow-visible">
-                <JarvisOrb animate={!reduceMotion && bootDone} />
+                <JarvisOrb animate={!reduceMotion} />
               </div>
             </motion.div>
 
             <div className="mt-8 w-full self-center">
-              <GithubContributionChart />
+              <HudFrame
+                label="Contributions"
+                meta="// LIVE"
+                ledTone="cyan"
+                innerStyle={{ padding: '1rem 0.5rem 0.5rem' }}
+              >
+                <GithubContributionChart />
+              </HudFrame>
             </div>
           </motion.div>
         </div>
 
-        {bootDone && (
-          <button
-            type="button"
-            className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 border-0 bg-transparent p-2 text-mono text-xs focus-visible:outline-2 focus-visible:outline-offset-4"
-            style={{
-              color: 'var(--color-text-muted)',
-              outlineColor: 'var(--color-accent-cyan)',
-            }}
-            onClick={() =>
-              document
-                .querySelector('#projects')
-                ?.scrollIntoView({ behavior: getScrollBehavior() })
-            }
-            aria-label="Scroll to projects"
-          >
-            <span>What ships next</span>
-            <ChevronDown size={18} aria-hidden className="hero-scroll-chevron" />
-          </button>
-        )}
+        <button
+          type="button"
+          className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 border-0 bg-transparent p-2 text-mono text-xs focus-visible:outline-2 focus-visible:outline-offset-4"
+          style={{
+            color: 'var(--color-text-muted)',
+            outlineColor: 'var(--color-accent-cyan)',
+          }}
+          onClick={() =>
+            document
+              .querySelector('#projects')
+              ?.scrollIntoView({ behavior: getScrollBehavior() })
+          }
+          aria-label="Scroll to projects"
+        >
+          <span>What ships next</span>
+          <ChevronDown size={18} aria-hidden className="hero-scroll-chevron" />
+        </button>
       </motion.div>
     </section>
   )
