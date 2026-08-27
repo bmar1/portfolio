@@ -1,119 +1,108 @@
-import SectionReveal from '../components/SectionReveal'
-
-const STATEMENT = [
-  'I do the boring half.',
-  'Adapter layers. Schema migrations.',
-  'The pipeline that breaks at 2am.',
-]
+import { useEffect, useRef, useState } from 'react'
 
 const FACTS = [
-  { k: 'Base', v: 'Toronto, ON' },
-  { k: 'School', v: "Seneca Polytechnic — CPA, Aug '27" },
-  { k: 'Leading', v: 'AWS Student Builders' },
-  { k: 'Status', v: "Open — Winter '27" },
+  ['base', 'Toronto, ON'],
+  ['school', "Seneca Polytechnic, CPA '27"],
+  ['leading', 'AWS Student Builders'],
+  ['status', "open for Winter '27"],
 ]
 
+/**
+ * Layout family: Text-Mask Manifesto. Used once, here.
+ * The statement is deliberately two words per line and nothing else, so the
+ * type can run big enough for the alley plate to actually read through it.
+ * The substance lives in the body below, not in the mask.
+ */
 export default function About() {
+  const ref = useRef<HTMLElement>(null)
+  const [on, setOn] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setOn(true), {
+      threshold: 0.2,
+    })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
-    <section id="about" className="section">
+    <section
+      id="about"
+      ref={ref}
+      className="section relative overflow-hidden"
+      style={{ paddingTop: '9rem', paddingBottom: '9rem' }}
+    >
       <div className="container">
-        <SectionReveal>
-          <span
-            className="text-mono"
-            style={{
-              color: 'var(--color-neon-cyan)',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              fontSize: '0.72rem',
-            }}
-          >
-            <span style={{ color: 'var(--color-text-muted)' }}>[</span>
-            {' '}OPERATOR{' '}
-            <span style={{ color: 'var(--color-neon-magenta)' }}>// 02</span>
-            {' '}
-            <span style={{ color: 'var(--color-text-muted)' }}>]</span>
+        {/* Solid yellow is set first; background-clip only overrides it where
+            supported, so the statement is never invisible. */}
+        <h2
+          className="mask-type"
+          style={{
+            color: 'var(--color-nc-yellow)',
+            fontSize: 'clamp(2.75rem, 11vw, 8.5rem)',
+            lineHeight: 0.92,
+            letterSpacing: '-0.015em',
+            maxWidth: '11ch',
+            opacity: on ? 1 : 0,
+            transform: on ? 'translateY(0)' : 'translateY(24px)',
+            transition:
+              'opacity 700ms var(--ease-out), transform 700ms var(--ease-out)',
+          }}
+        >
+          Adapter layers.
+        </h2>
+
+        {/* The archetype, stated once, plainly. */}
+        <p
+          className="t-label mt-8 flex flex-wrap items-center gap-x-3 gap-y-1"
+          style={{ color: 'var(--color-nc-text)' }}
+        >
+          <span>Product builder</span>
+          <span style={{ color: 'var(--color-nc-magenta)' }} aria-hidden>
+            ×
           </span>
-        </SectionReveal>
+          <span style={{ color: 'var(--color-nc-yellow)' }}>
+            Engineering rigor
+          </span>
+        </p>
 
-        {/* Oversized statement — the whole section leads with type, no cards */}
-        <div className="mt-10 flex flex-col gap-1">
-          {STATEMENT.map((line, i) => (
-            <SectionReveal key={line} delay={i * 90}>
-              <h2
-                className="text-h2"
-                style={{
-                  color: i === 0 ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
-                  maxWidth: '18ch',
-                  lineHeight: 1.12,
-                }}
-              >
-                {line}
-              </h2>
-            </SectionReveal>
-          ))}
+        {/* One paragraph, broken into three beats so it reads as rhythm
+            rather than a wall. Nothing else. */}
+        <div className="mt-14 grid gap-8 md:grid-cols-3 md:gap-10">
+          <p style={{ color: 'var(--color-nc-text-muted)' }}>
+            I care about what is underneath more than what screenshots well.
+          </p>
+          <p style={{ color: 'var(--color-nc-text-muted)' }}>
+            Three platform APIs became one posting service, because three
+            integrations is three things that can page you at 2am and one is one.
+          </p>
+          <p style={{ color: 'var(--color-nc-text-muted)' }}>
+            Nest ranks 140+ listings in under thirty seconds, on a queue I
+            rebuilt twice before it stopped falling over.
+          </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-          <SectionReveal delay={120} className="lg:col-span-7">
-            <p className="text-body" style={{ color: 'var(--color-text-secondary)', maxWidth: '52ch' }}>
-              Squashed three platform APIs into one posting service at Sikh Sparks. Got Plated up to
-              86% coverage. Government systems next. It's the same job every time, really — make the
-              messy part boring.
-            </p>
-          </SectionReveal>
-
-          {/* Pull quote — magenta rule instead of a card */}
-          <SectionReveal delay={220} direction="left" className="lg:col-span-5">
-            <blockquote
-              style={{
-                borderLeft: '2px solid var(--color-neon-magenta)',
-                paddingLeft: '1.25rem',
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(1.05rem, 1.7vw, 1.35rem)',
-                fontWeight: 500,
-                lineHeight: 1.45,
-                color: 'var(--color-text-primary)',
-              }}
-            >
-              "The boring infrastructure nobody wants to touch is usually where the good
-              improvements are hiding."
-            </blockquote>
-            <p className="text-mono mt-3" style={{ color: 'var(--color-text-muted)', fontSize: '0.72rem', paddingLeft: '1.25rem' }}>
-              — something I actually wrote in a cover letter
-            </p>
-          </SectionReveal>
-        </div>
-
-        {/* Fact rail — four hairline columns, no boxes */}
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
-          {FACTS.map((fact, i) => (
-            <SectionReveal key={fact.k} delay={i * 70} direction="up">
-              <div className="rule-row pt-4 pb-5 h-full">
-                <span
-                  className="text-mono block"
-                  style={{
-                    color: 'var(--color-neon-cyan)',
-                    fontSize: '0.66rem',
-                    letterSpacing: '0.16em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {fact.k}
+        {/* Facts as one mono run-on, not a four-column card row. */}
+        <p
+          className="t-mono mt-24 flex flex-wrap items-center gap-x-3 gap-y-2"
+          style={{ color: 'var(--color-nc-text-dim)' }}
+        >
+          {FACTS.map(([k, v], i) => (
+            <span key={k} className="flex items-center gap-3">
+              {i > 0 && (
+                <span style={{ color: 'var(--color-nc-magenta)' }} aria-hidden>
+                  //
                 </span>
-                <span
-                  className="block mt-1.5"
-                  style={{
-                    color: 'var(--color-text-primary)',
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '0.95rem',
-                  }}
-                >
-                  {fact.v}
-                </span>
-              </div>
-            </SectionReveal>
+              )}
+              <span>
+                <span style={{ color: 'var(--color-nc-yellow)' }}>{k}:</span>{' '}
+                <span style={{ color: 'var(--color-nc-text-muted)' }}>{v}</span>
+              </span>
+            </span>
           ))}
-        </div>
+        </p>
       </div>
     </section>
   )

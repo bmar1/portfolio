@@ -1,69 +1,66 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Lenis from 'lenis'
-import Navbar from './components/Navbar'
+import { prefersReducedMotion } from './utils/motion'
+import BootSequence from './components/BootSequence'
+import { shouldBoot } from './utils/boot'
+import SectorRail from './components/SectorRail'
 import Hero from './sections/Hero'
+import Experience from './sections/Experience'
 import About from './sections/About'
 import Projects from './sections/Projects'
 import Skills from './sections/Skills'
-import Experience from './sections/Experience'
 import OffGrid from './sections/OffGrid'
 import Contact from './sections/Contact'
 
 export default function App() {
+  // Decided once, before first paint, so the hero does not flash behind boot.
+  const [booting, setBooting] = useState(shouldBoot)
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return
-    }
+    if (prefersReducedMotion()) return
 
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
       smoothWheel: true,
     })
 
-    let rafId = 0
-
-    function raf(time: number) {
+    let raf = 0
+    const loop = (time: number) => {
       lenis.raf(time)
-      rafId = requestAnimationFrame(raf)
+      raf = requestAnimationFrame(loop)
     }
-
-    rafId = requestAnimationFrame(raf)
+    raf = requestAnimationFrame(loop)
 
     return () => {
-      cancelAnimationFrame(rafId)
+      cancelAnimationFrame(raf)
       lenis.destroy()
     }
   }, [])
 
+  // Nothing scrolls while the boot screen owns the viewport.
+  useEffect(() => {
+    document.body.style.overflow = booting ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [booting])
+
   return (
     <>
-      <style>{`
-        @keyframes appPop {
-          0% { opacity: 0; transform: scale(0.95); filter: brightness(1) blur(10px); }
-          40% { opacity: 1; transform: scale(1.02); filter: brightness(1.5) blur(0px); }
-          100% { opacity: 1; transform: scale(1); filter: brightness(1) blur(0px); }
-        }
-        .animate-app-pop {
-          animation: appPop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-      `}</style>
+      {booting && <BootSequence onDone={() => setBooting(false)} />}
 
-      <Navbar />
+      <SectorRail />
 
-      <div className="animate-app-pop">
-        <main>
-          <Hero />
-          <Experience />
-          <About />
-          <Projects />
-          <Skills />
-          <OffGrid />
-          <Contact />
-        </main>
-      </div>
+      <main>
+        <Hero bootDone={!booting} />
+        <Experience />
+        <About />
+        <Projects />
+        <Skills />
+        <OffGrid />
+        <Contact />
+      </main>
     </>
   )
 }

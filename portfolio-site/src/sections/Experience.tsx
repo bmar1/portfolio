@@ -1,245 +1,226 @@
-import SectionReveal from '../components/SectionReveal'
+import { useEffect, useRef, useState } from 'react'
 import CountUp from '../components/CountUp'
+import DecodeText from '../components/DecodeText'
 
-type Status = 'upcoming' | 'recent' | 'past'
-
-interface Role {
-  title: string
-  org: string
-  period: string
-  status: Status
-  featured?: boolean
-  note?: string
-  stats?: { value: number; suffix: string; label: string }[]
-  bullets: string[]
-}
-
-const ROLES: Role[] = [
-  {
-    title: 'Software Developer Co-Op',
-    org: 'Ontario Public Service',
-    period: "Fall '26",
-    status: 'upcoming',
-    note: 'Cluster Applications Branch, MPBSDP. Starting this fall.',
-    bullets: [],
-  },
-  {
-    title: 'Software Engineer Intern',
-    org: 'Sikh Sparks',
-    period: "Summer '26",
-    status: 'recent',
-    featured: true,
-    stats: [
-      { value: 100, suffix: '+', label: 'orgs' },
-      { value: 60, suffix: '%', label: 'faster publishing' },
-      { value: 200, suffix: '+', label: 'daily messages' },
-    ],
-    bullets: [
-      'Built an adapter layer in Spring Boot so three-plus platform APIs behave like one posting service.',
-      "Pulled 4+ org inboxes into a single place using Meta's webhook and polling APIs.",
-      'Sliced the work up so three of us could ship without stepping on each other.',
-    ],
-  },
-  {
-    title: 'Software Engineer',
-    org: 'Liza Bilal Enterprise Inc.',
-    period: "Dec '25 — Apr '26",
-    status: 'past',
-    bullets: [
-      'Shipped a client site on AWS that 200+ people actually use.',
-      'Wrote an Express API to generate the reports nobody wanted to do by hand — 2+ hrs back every week.',
-      'Got the first load 22% faster with compression, lazy loading, and minification.',
-    ],
-  },
-]
-
-const LEADERSHIP = [
-  { role: 'President', org: 'GDG Seneca', period: "Dec '25 —", detail: '120+ attendees per term' },
-  { role: 'Group Leader', org: 'AWS Student Builders', period: "May '26 —", detail: '75+ students, 8-event curriculum' },
-]
-
-const DOT: Record<Status, string> = {
-  upcoming: 'var(--color-neon-amber)',
-  recent: 'var(--color-neon-magenta)',
-  past: 'var(--color-text-muted)',
-}
-
+/**
+ * Layout family: staggered scale ladder. Used once, here.
+ *
+ * The four entries differ by weight and scale, not by chrome. Exactly one has
+ * a filled panel (the anchor); the rest are plain type on the grid. No dashed
+ * rules, no tinted sub-fields, no key/value tables. Distinction comes from how
+ * much room each one takes up.
+ */
 export default function Experience() {
+  const ref = useRef<HTMLElement>(null)
+  const [seen, setSeen] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([e]) => e.isIntersecting && setSeen(true),
+      { threshold: 0.1 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
   return (
-    <section id="experience" className="section">
-      <div className="container">
-        <SectionReveal>
+    <section id="experience" ref={ref} className="section soft-grid relative">
+      <div className="container relative z-10">
+        <DecodeText
+          as="h2"
+          text="WHERE I'VE BEEN"
+          run={seen}
+          className="t-h2"
+          style={{ color: 'var(--color-nc-text)' }}
+        />
+
+        {/* ---- Upcoming. One line, quiet, no container at all. ---- */}
+        <div className="mt-20 flex flex-wrap items-baseline gap-x-5 gap-y-2">
           <span
-            className="text-mono"
-            style={{
-              color: 'var(--color-neon-cyan)',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              fontSize: '0.72rem',
-            }}
+            className="t-data"
+            style={{ color: 'var(--color-nc-cyan)', fontSize: '0.85rem' }}
           >
-            <span style={{ color: 'var(--color-text-muted)' }}>[</span>
-            {' '}LOGFILE{' '}
-            <span style={{ color: 'var(--color-neon-magenta)' }}>// 01</span>
-            {' '}
-            <span style={{ color: 'var(--color-text-muted)' }}>]</span>
+            FALL &apos;26
           </span>
-          <h2 className="text-h2 mt-3">Where I've been</h2>
-        </SectionReveal>
-
-        <div className="mt-14 flex flex-col">
-          {ROLES.map((role, i) => (
-            <SectionReveal key={role.org} delay={i * 100}>
-              <article
-                className="rule-row grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 py-10"
-                style={
-                  role.featured
-                    ? {
-                        borderLeft: '2px solid var(--color-neon-magenta)',
-                        paddingLeft: '1.5rem',
-                        background:
-                          'linear-gradient(90deg, var(--color-glow-magenta-soft), transparent 55%)',
-                      }
-                    : undefined
-                }
-              >
-                {/* Period rail */}
-                <div className="lg:col-span-3 flex items-start gap-3">
-                  <span
-                    className="mt-2 shrink-0"
-                    style={{
-                      width: 7,
-                      height: 7,
-                      background: DOT[role.status],
-                      boxShadow: role.status === 'past' ? 'none' : `0 0 10px ${DOT[role.status]}`,
-                      transform: 'rotate(45deg)',
-                    }}
-                    aria-hidden
-                  />
-                  <span
-                    className="text-mono"
-                    style={{
-                      color: role.status === 'past' ? 'var(--color-text-muted)' : 'var(--color-text-secondary)',
-                      fontSize: '0.95rem',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {role.period}
-                  </span>
-                </div>
-
-                {/* Body */}
-                <div className="lg:col-span-9 flex flex-col gap-3">
-                  <div>
-                    <h3
-                      className={role.featured ? 'text-h3' : 'text-lg font-semibold'}
-                      style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-text-primary)' }}
-                    >
-                      {role.title}
-                    </h3>
-                    <p className="text-sm mt-0.5" style={{ color: 'var(--color-accent-cyan)' }}>
-                      {role.org}
-                    </p>
-                  </div>
-
-                  {role.note && (
-                    <p className="text-mono" style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
-                      {role.note}
-                    </p>
-                  )}
-
-                  {role.stats && (
-                    <div className="flex gap-7 flex-wrap">
-                      {role.stats.map((s) => (
-                        <div key={s.label} className="flex flex-col">
-                          <span
-                            className="text-mono font-semibold"
-                            style={{
-                              color: 'var(--color-neon-magenta)',
-                              fontSize: '1.15rem',
-                              textShadow: '0 0 12px var(--color-glow-magenta-soft)',
-                            }}
-                          >
-                            <CountUp end={s.value} suffix={s.suffix} />
-                          </span>
-                          <span
-                            className="text-mono mt-0.5"
-                            style={{
-                              color: 'var(--color-text-muted)',
-                              fontSize: '0.64rem',
-                              letterSpacing: '0.08em',
-                              textTransform: 'uppercase',
-                            }}
-                          >
-                            {s.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {role.bullets.length > 0 && (
-                    <ul className="flex flex-col gap-2 mt-1">
-                      {role.bullets.map((b) => (
-                        <li
-                          key={b}
-                          className="text-sm"
-                          style={{
-                            color: 'var(--color-text-secondary)',
-                            paddingLeft: '1rem',
-                            position: 'relative',
-                            maxWidth: '62ch',
-                          }}
-                        >
-                          <span
-                            style={{
-                              position: 'absolute',
-                              left: 0,
-                              color: 'var(--color-neon-magenta)',
-                              fontFamily: 'var(--font-mono)',
-                            }}
-                          >
-                            &rsaquo;
-                          </span>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </article>
-            </SectionReveal>
-          ))}
+          <h3
+            className="t-h3"
+            style={{ color: 'var(--color-nc-text)', fontSize: '1.05rem' }}
+          >
+            Software Developer Co-op
+          </h3>
+          <span
+            className="t-mono"
+            style={{ color: 'var(--color-nc-text-muted)' }}
+          >
+            Ontario Public Service
+          </span>
         </div>
 
-        {/* Leadership — demoted to a compact strip */}
-        <SectionReveal delay={120}>
-          <div className="mt-12 pt-6" style={{ borderTop: '1px solid var(--color-border)' }}>
+        {/* ---- The anchor. The only filled panel on the page section. ---- */}
+        <article className="panel mt-10 px-7 py-10 md:px-12 md:py-14">
+          <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
             <span
-              className="text-mono"
-              style={{
-                color: 'var(--color-text-muted)',
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                fontSize: '0.66rem',
-              }}
+              className="t-data"
+              style={{ color: 'var(--color-nc-magenta)', fontSize: '0.85rem' }}
             >
-              [ LEADERSHIP ]
+              SUMMER &apos;26
             </span>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {LEADERSHIP.map((l) => (
-                <div key={l.role} className="flex flex-col">
-                  <span style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-heading)', fontSize: '0.95rem' }}>
-                    {l.role} · {l.org}
-                  </span>
-                  <span className="text-mono mt-0.5" style={{ color: 'var(--color-text-muted)', fontSize: '0.72rem' }}>
-                    {l.period} — {l.detail}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <span
+              className="t-mono"
+              style={{ color: 'var(--color-nc-text-dim)' }}
+            >
+              Sikh Sparks
+            </span>
           </div>
-        </SectionReveal>
+
+          <h3
+            className="t-h2 mt-4"
+            style={{
+              color: 'var(--color-nc-text)',
+              fontSize: 'clamp(1.5rem, 3vw, 2.3rem)',
+            }}
+          >
+            Software Engineer Intern
+          </h3>
+
+          {/* Stats as a plain row of numerals, no boxes */}
+          <div className="mt-9 flex flex-wrap gap-x-14 gap-y-6">
+            {[
+              { v: 100, s: '+', l: 'orgs' },
+              { v: 60, s: '%', l: 'faster publishing' },
+              { v: 200, s: '+', l: 'daily messages' },
+            ].map((st) => (
+              <div key={st.l} className="flex flex-col gap-1">
+                <span
+                  className="t-data"
+                  style={{
+                    color: 'var(--color-nc-yellow)',
+                    fontSize: 'clamp(1.8rem, 3.4vw, 2.6rem)',
+                    lineHeight: 1,
+                  }}
+                >
+                  <CountUp end={st.v} suffix={st.s} />
+                </span>
+                <span
+                  className="t-label"
+                  style={{
+                    color: 'var(--color-nc-text-dim)',
+                    fontSize: '0.58rem',
+                  }}
+                >
+                  {st.l}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <ul className="mt-10 flex flex-col gap-4">
+            {[
+              'Wrote a Spring Boot adapter layer so three platform APIs behave like one posting service. They mostly cooperate.',
+              "Pulled four org inboxes into a single view with Meta's webhook and polling APIs.",
+              'Split the work so three of us could ship the same week without stepping on each other.',
+            ].map((b) => (
+              <li
+                key={b}
+                style={{ color: 'var(--color-nc-text-muted)', maxWidth: '64ch' }}
+              >
+                {b}
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        {/* ---- Previous. Plain type, no fill, generous space. ---- */}
+        <div className="mt-24 grid gap-6 md:grid-cols-12 md:gap-10">
+          <div className="md:col-span-4">
+            <span
+              className="t-data block"
+              style={{ color: 'var(--color-nc-text-dim)', fontSize: '0.85rem' }}
+            >
+              DEC &apos;25 — APR &apos;26
+            </span>
+            <h3
+              className="t-h3 mt-3"
+              style={{ color: 'var(--color-nc-text)', fontSize: '1.05rem' }}
+            >
+              Software Engineer
+            </h3>
+            <span
+              className="t-mono"
+              style={{ color: 'var(--color-nc-text-muted)' }}
+            >
+              Liza Bilal Enterprise
+            </span>
+          </div>
+
+          <ul className="flex flex-col gap-4 md:col-span-8">
+            {[
+              'Shipped a client site on AWS that 200+ people actually use.',
+              'Wrote an Express API for the reports someone was doing by hand. Two hours a week back.',
+              'Cut first load by 22% with compression, lazy loading, and minification.',
+            ].map((b) => (
+              <li
+                key={b}
+                style={{ color: 'var(--color-nc-text-muted)', maxWidth: '60ch' }}
+              >
+                {b}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ---- Leadership. Big numerals, nothing else. AWS first. ---- */}
+        <div className="mt-24 grid gap-12 sm:grid-cols-2 sm:gap-16">
+          {[
+            {
+              n: 75,
+              unit: 'students',
+              org: 'AWS Student Builders',
+              role: "Group Leader · May '26 —",
+              tone: 'var(--color-nc-yellow)',
+            },
+            {
+              n: 120,
+              unit: 'attendees a term',
+              org: 'GDG Seneca',
+              role: "President · Dec '25 —",
+              tone: 'var(--color-nc-magenta)',
+            },
+          ].map((l) => (
+            <div key={l.org} className="flex flex-col gap-2">
+              <span
+                className="t-data"
+                style={{
+                  color: l.tone,
+                  fontSize: 'clamp(2.6rem, 6vw, 4rem)',
+                  lineHeight: 1,
+                }}
+              >
+                <CountUp end={l.n} suffix="+" />
+              </span>
+              <span
+                className="t-label"
+                style={{ color: 'var(--color-nc-text-dim)', fontSize: '0.58rem' }}
+              >
+                {l.unit}
+              </span>
+              <p
+                className="t-h3 mt-3"
+                style={{ color: 'var(--color-nc-text)', fontSize: '1rem' }}
+              >
+                {l.org}
+              </p>
+              <p
+                className="t-mono"
+                style={{ color: 'var(--color-nc-text-muted)' }}
+              >
+                {l.role}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

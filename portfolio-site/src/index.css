@@ -1,110 +1,64 @@
 @import "tailwindcss";
 
-/* Hallmark · component-tokenized · theme: custom (cyberpunk)
- * paper: oklch(14% 0.015 240) · accents: cyan oklch(82% 0.18 195) + magenta oklch(70% 0.28 340)
- * display: JetBrains Mono · body: Inter · tech: Space Grotesk
- */
-
 /* ============================================================
-   DESIGN TOKENS — Cyberpunk System (cyan + magenta neon)
+   NIGHT CITY — KITSCH
+   Palette + effect recipes sourced from references/skills/CYBERPUNK-SKILL.md
+   (Cyberpunk 2077 UI Art Bible). Sub-style: KITSCH — "Style over Substance".
+   Color law: yellow AND magenta on black. Both must appear.
+   Shape law: radius 0 everywhere, clip-path chamfers.
    ============================================================ */
 
 @theme {
-  /* Surface — slightly cooler near-black */
-  --color-bg-base: oklch(14% 0.015 240);
-  --color-bg-surface: oklch(18% 0.02 240);
-  --color-bg-elevated: oklch(22% 0.025 240);
+  /* Backgrounds */
+  --color-nc-void: #050508;
+  --color-nc-surface: #0d0d14;
+  --color-nc-surface-2: #141420;
 
-  /* Lattice / borders */
-  --color-border: oklch(28% 0.025 240);
-  --color-border-hover: oklch(38% 0.03 240);
-  --color-grid: oklch(32% 0.04 240);
+  /* Kitsch neons — yellow dominant, magenta secondary, cyan for data */
+  --color-nc-yellow: #fcee0a;
+  --color-nc-yellow-hot: #ffeb0b;
+  --color-nc-magenta: #ed1e79;
+  --color-nc-magenta-hot: #ff0055;
+  --color-nc-cyan: #25e1ed;
+  --color-nc-red: #c5003c;
+  --color-nc-success: #05ffa1;
 
   /* Text */
-  --color-text-primary: oklch(96% 0 0);
-  --color-text-secondary: oklch(72% 0.02 240);
-  --color-text-muted: oklch(50% 0.02 240);
+  --color-nc-text: #e8e8e8;
+  --color-nc-text-muted: #8a9bb0;
+  --color-nc-text-dim: #4a5568;
+  --color-nc-border: #1f2430;
 
-  /* Neon palette */
-  --color-neon-cyan: oklch(82% 0.18 195);
-  --color-neon-magenta: oklch(70% 0.28 340);
-  --color-neon-amber: oklch(80% 0.18 75);
-  --color-signal-red: oklch(65% 0.24 25);
-
-  /* Pre-baked glows for box-shadow (rgba so they tween cleanly) */
-  --color-glow-cyan: rgba(64, 224, 230, 0.35);
-  --color-glow-cyan-soft: rgba(64, 224, 230, 0.15);
-  --color-glow-magenta: rgba(255, 90, 200, 0.30);
-  --color-glow-magenta-soft: rgba(255, 90, 200, 0.12);
-
-  /* Legacy aliases — keep section files working without rewrite */
-  --color-accent-cyan: var(--color-neon-cyan);
-  --color-accent-violet: var(--color-neon-magenta);
-  --color-accent-glow: var(--color-glow-cyan-soft);
-  --color-accent-glow-strong: var(--color-glow-cyan);
-
-  /* Fonts */
-  --font-display: "JetBrains Mono", "Fira Code", monospace;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-tech: "Space Grotesk", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
-  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  /* Fonts — 4 families, all technical. No system sans in hero areas. */
+  --font-kitsch: "Chakra Petch", sans-serif;
+  --font-ui: "Rajdhani", sans-serif;
+  --font-mono: "Share Tech Mono", "Courier New", monospace;
+  --font-data: "Orbitron", sans-serif;
 }
-
-/* ============================================================
-   ROOT VARS — easing, geometry primitives, scanlines
-   ============================================================ */
 
 :root {
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --rail-w: 76px;
 
-  /* Chamfered card — top-left + bottom-right corners cut */
-  --clip-corner-sm: polygon(
-    8px 0,
-    100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    0 100%,
-    0 8px
-  );
-  --clip-corner: polygon(
-    14px 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%,
-    0 14px
-  );
-  --clip-corner-lg: polygon(
-    22px 0,
-    100% 0,
-    100% calc(100% - 22px),
-    calc(100% - 22px) 100%,
-    0 100%,
-    0 22px
-  );
-
-  /* Angled button — slight right-edge cut */
-  --clip-button: polygon(
+  /* Signature chamfers (art bible section 3) */
+  --clip-dual: polygon(
     0 0,
-    calc(100% - 10px) 0,
-    100% 50%,
-    calc(100% - 10px) 100%,
-    0 100%
-  );
-
-  /* Single-corner notch for tags / pills */
-  --clip-tag: polygon(
-    6px 0,
-    100% 0,
+    calc(100% - 20px) 0,
+    100% 20px,
     100% 100%,
-    0 100%,
-    0 6px
+    20px 100%,
+    0 calc(100% - 20px)
   );
+  --clip-btn: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+  --clip-badge: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
 
-  /* Scanline overlay — repeating gradient, opacity controlled per-use */
   --scanline-bg: repeating-linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.03) 0px,
@@ -115,11 +69,14 @@
 }
 
 /* ============================================================
-   GLOBAL RESETS & BASE
+   BASE
    ============================================================ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  border-radius: 0; /* shape lock: no pills, no rounded cards, anywhere */
 }
 
 html {
@@ -130,42 +87,34 @@ html {
 
 body {
   margin: 0;
-  padding: 0;
-  background-color: var(--color-bg-base);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
+  background-color: var(--color-nc-void);
+  color: var(--color-nc-text);
+  font-family: var(--font-ui);
   font-size: 1rem;
-  line-height: 1.65;
-  overflow-x: hidden;
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11.5" y="4" width="1" height="5" fill="%2340e0e6"/><rect x="11.5" y="15" width="1" height="5" fill="%2340e0e6"/><rect x="4" y="11.5" width="5" height="1" fill="%2340e0e6"/><rect x="15" y="11.5" width="5" height="1" fill="%2340e0e6"/><circle cx="12" cy="12" r="1.2" fill="%2340e0e6"/></svg>') 12 12, crosshair;
+  font-weight: 400;
+  line-height: 1.6;
+  /* `clip`, not `hidden`. `overflow-x: hidden` makes body a scroll container,
+     which silently breaks position:sticky for every descendant (the pinned
+     project pan and the experience stack both depend on it). */
+  overflow-x: clip;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-tech);
-  line-height: 1.15;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-kitsch);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
   margin: 0;
-  letter-spacing: -0.01em;
 }
-
-p { margin: 0; }
 
 a {
   color: inherit;
   text-decoration: none;
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 10V6H10" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M18 10V6H14" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M6 14V18H10" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M18 14V18H14" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><rect x="11.2" y="11.2" width="1.6" height="1.6" fill="%23ff5ac8"/></svg>') 12 12, pointer;
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-neon-cyan);
-  outline-offset: 3px;
-}
-
-button {
-  cursor: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 10V6H10" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M18 10V6H14" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M6 14V18H10" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><path d="M18 14V18H14" stroke="%23ff5ac8" stroke-width="1.5" fill="none"/><rect x="11.2" y="11.2" width="1.6" height="1.6" fill="%23ff5ac8"/></svg>') 12 12, pointer;
-  font-family: inherit;
-  border: none;
-  background: none;
-  padding: 0;
+  cursor: pointer;
 }
 
 img {
@@ -173,141 +122,224 @@ img {
   max-width: 100%;
 }
 
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Focus: neon outline, never removed (art bible a11y rule) */
+:focus-visible {
+  outline: 2px solid var(--color-nc-yellow);
+  outline-offset: 3px;
+}
+
+/* Screen-reader-only, for the command-line labels */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ============================================================
-   TYPOGRAPHY SCALE
+   TYPE SCALE
    ============================================================ */
 
-.text-h1 {
-  font-size: clamp(3rem, 6vw, 5rem);
+.t-hero {
+  font-family: var(--font-kitsch);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  font-family: var(--font-tech);
-}
-
-.text-h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  font-family: var(--font-tech);
-}
-
-.text-h3 {
-  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  font-weight: 600;
-  font-family: var(--font-tech);
-}
-
-.text-body {
-  font-size: 1rem;
-  line-height: 1.65;
-}
-
-.text-mono {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
+  text-transform: uppercase;
   letter-spacing: 0.02em;
+  line-height: 1.05;
+}
+
+.t-h2 {
+  font-family: var(--font-kitsch);
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.t-h3 {
+  font-family: var(--font-ui);
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.t-label {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.t-data {
+  font-family: var(--font-data);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ============================================================
-   BUTTON SYSTEM — clipped, neon-edged
+   BUTTONS — Kitsch: loud, clipped, glow on hover
    ============================================================ */
 
 .btn {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem 0.75rem 1.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 500;
+  gap: 0.55rem;
+  padding: 0.8rem 1.9rem;
+  font-family: var(--font-kitsch);
+  font-size: 0.875rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  clip-path: var(--clip-button);
-  transition: transform 160ms var(--ease-out),
-              box-shadow 200ms ease,
-              background-color 200ms ease,
-              color 200ms ease;
+  letter-spacing: 0.1em;
+  white-space: nowrap; /* CTA wrap ban */
+  clip-path: var(--clip-btn);
+  transition:
+    background 150ms,
+    box-shadow 150ms,
+    color 150ms,
+    transform 100ms;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: translateY(1px);
 }
 
-/* Primary — solid cyan with magenta hover shift */
 .btn-primary {
-  background: var(--color-neon-cyan);
-  color: var(--color-bg-base);
+  background: var(--color-nc-yellow);
+  color: var(--color-nc-void); /* black on yellow — contrast checked */
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover {
-    background: var(--color-neon-magenta);
-    color: var(--color-text-primary);
-    box-shadow: 0 0 22px var(--color-glow-magenta),
-                0 0 48px var(--color-glow-magenta-soft);
-  }
+.btn-primary:hover {
+  background: var(--color-nc-yellow-hot);
+  box-shadow:
+    0 0 20px rgba(252, 238, 10, 0.7),
+    0 0 40px rgba(252, 238, 10, 0.3);
 }
 
-/* Ghost — hairline frame, fills cyan on hover */
 .btn-ghost {
-  background: var(--color-bg-surface);
-  color: var(--color-text-primary);
-  /* Neon hairline frame faked via inset shadow so it follows clip-path */
-  box-shadow: inset 0 0 0 1px var(--color-neon-cyan),
-              0 0 0 1px var(--color-glow-cyan-soft);
+  background: transparent;
+  color: var(--color-nc-yellow);
+  box-shadow: inset 0 0 0 1px var(--color-nc-yellow);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .btn-ghost:hover {
-    background: var(--color-bg-elevated);
-    color: var(--color-neon-cyan);
-    box-shadow: inset 0 0 0 1px var(--color-neon-cyan),
-                0 0 18px var(--color-glow-cyan),
-                0 0 36px var(--color-glow-cyan-soft);
-  }
+.btn-ghost:hover {
+  color: var(--color-nc-void);
+  background: var(--color-nc-yellow);
+  box-shadow:
+    0 0 20px rgba(252, 238, 10, 0.6),
+    0 0 40px rgba(252, 238, 10, 0.25);
 }
 
 /* ============================================================
-   GRID + SCANLINE BACKGROUND
+   BADGE — magenta, satisfies the Kitsch both-colors law
    ============================================================ */
 
-.grid-bg {
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.7rem;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-nc-void);
+  background: var(--color-nc-magenta);
+  clip-path: var(--clip-badge);
+}
+
+.badge-ghost {
+  color: var(--color-nc-text-muted);
+  background: var(--color-nc-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-nc-border);
+  transition:
+    color 150ms,
+    box-shadow 150ms;
+}
+
+.badge-ghost:hover {
+  color: var(--color-nc-yellow);
+  box-shadow: inset 0 0 0 1px var(--color-nc-yellow);
+}
+
+/* ============================================================
+   PANELS
+   ============================================================ */
+
+.panel {
+  background: var(--color-nc-surface);
+  clip-path: var(--clip-dual);
+  box-shadow: inset 0 0 0 1px var(--color-nc-border);
+}
+
+/* Hazard stripes — the 2077 signature bar */
+.hazard {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-nc-yellow) 0px,
+    var(--color-nc-yellow) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* ============================================================
+   HUD BRACKETS
+   ============================================================ */
+
+.hud {
   position: relative;
 }
 
-.grid-bg::before {
+.hud::before,
+.hud::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--color-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: 60px 60px;
+  width: 12px;
+  height: 12px;
+  border-color: var(--color-nc-cyan);
+  border-style: solid;
   pointer-events: none;
-  opacity: calc(0.10 * var(--hero-scroll-fade, 1));
-  animation: gridPulse 4s ease-in-out infinite;
 }
 
-.grid-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: var(--scanline-bg);
-  opacity: calc(0.55 * var(--hero-scroll-fade, 1));
-  mix-blend-mode: overlay;
+.hud::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
 }
 
-@keyframes gridPulse {
-  0%, 100% { opacity: calc(0.08 * var(--hero-scroll-fade, 1)); }
-  50% { opacity: calc(0.14 * var(--hero-scroll-fade, 1)); }
+.hud::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
 }
 
-/* Section-scoped scanline overlay utility */
-.scanlines {
-  position: relative;
-}
+/* ============================================================
+   OVERLAYS — scanlines, grid, grain
+   ============================================================ */
+
 .scanlines::after {
   content: "";
   position: absolute;
@@ -316,21 +348,45 @@ img {
   background: var(--scanline-bg);
   opacity: 0.5;
   mix-blend-mode: overlay;
+  z-index: 2;
+}
+
+.gridlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(37, 225, 237, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 225, 237, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
   z-index: 1;
 }
 
+/* Global film grain */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-size: 140px 140px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
 /* ============================================================
-   SECTION CONTAINERS
+   LAYOUT
    ============================================================ */
 
 .section {
   position: relative;
-  padding: 6rem 0;
-  background-image: radial-gradient(ellipse at center, rgba(255, 90, 200, 0.03) 0%, transparent 70%);
+  padding: 7rem 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
@@ -341,360 +397,30 @@ img {
   }
 }
 
-/* ============================================================
-   LINK REVEAL — dual-pass cyan + magenta underline
-   ============================================================ */
-
-.link-reveal {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: color 160ms var(--ease-out);
-}
-
-.link-reveal::before,
-.link-reveal::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 1.5px;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 220ms var(--ease-out);
-  pointer-events: none;
-}
-
-.link-reveal::after {
-  bottom: -2px;
-  background: var(--color-neon-cyan);
-}
-
-.link-reveal::before {
-  bottom: -5px;
-  background: var(--color-neon-magenta);
-  transition-delay: 60ms;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .link-reveal:hover::after,
-  .link-reveal:hover::before {
-    clip-path: inset(0 0 0 0);
+/* Rail clearance — content never sits under the fixed sector rail */
+@media (min-width: 768px) {
+  main {
+    padding-left: var(--rail-w);
   }
 }
 
-.link-reveal:focus-visible::after,
-.link-reveal:focus-visible::before {
-  clip-path: inset(0 0 0 0);
-}
-
-/* ============================================================
-   PROJECT CARD — clipped, neon edge
-   ============================================================ */
-
-.project-card {
-  position: relative;
-  clip-path: var(--clip-corner-lg);
-  transition: box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out);
-}
-
-/* Inset shadow draws the neon hairline along the clipped edge */
-.project-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  clip-path: var(--clip-corner-lg);
-  box-shadow: inset 0 0 0 1px var(--color-neon-cyan);
-  transition: box-shadow 220ms var(--ease-out);
-  z-index: 2;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card:hover,
-  .project-card:focus-within {
-    box-shadow: 0 0 36px var(--color-glow-cyan),
-                0 0 80px var(--color-glow-magenta-soft);
-  }
-
-  .project-card:hover::before,
-  .project-card:focus-within::before {
-    box-shadow: inset 0 0 0 1px var(--color-neon-magenta);
+/* Contact end-strip: hairline runs under the rail so the bottom bar and
+   the sector rail share one frame instead of stopping short of each other. */
+@media (min-width: 768px) {
+  .eol-strip {
+    width: calc(100% + var(--rail-w));
+    margin-left: calc(-1 * var(--rail-w));
+    padding-left: calc(var(--rail-w) + 3rem);
+    padding-right: 3rem;
   }
 }
 
-.project-card:focus-within {
-  box-shadow: 0 0 36px var(--color-glow-magenta),
-              0 0 80px var(--color-glow-cyan-soft);
-}
-
-.project-card:focus-within::before {
-  box-shadow: inset 0 0 0 1px var(--color-neon-magenta);
-}
-
-.project-link,
-.contact-link {
-  align-items: center;
-}
-
-.back-to-top {
-  transition: color 160ms var(--ease-out);
-}
-
-.back-to-top svg {
-  transition: transform 160ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .back-to-top:hover svg {
-    transform: translateY(-3px);
-  }
-  .back-to-top:hover {
-    color: var(--color-neon-cyan);
+/* Mobile: bottom tab strip clearance */
+@media (max-width: 767px) {
+  main {
+    padding-bottom: 64px;
   }
 }
-
-/* ============================================================
-   PILL / BRACKETED TAG
-   ============================================================ */
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.30rem 0.65rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background: var(--color-bg-elevated);
-  color: var(--color-text-secondary);
-  clip-path: var(--clip-tag);
-  position: relative;
-  transition: color 160ms var(--ease-out), background 160ms var(--ease-out);
-}
-
-.pill::before {
-  content: "[";
-  margin-right: 0.4rem;
-  color: var(--color-text-muted);
-  transition: color 160ms var(--ease-out);
-}
-
-.pill::after {
-  content: "]";
-  margin-left: 0.4rem;
-  color: var(--color-text-muted);
-  transition: color 160ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .pill:hover {
-    color: var(--color-neon-cyan);
-    background: var(--color-bg-surface);
-  }
-  .pill:hover::before,
-  .pill:hover::after {
-    color: var(--color-neon-cyan);
-  }
-}
-
-.pill-accent {
-  color: var(--color-neon-cyan);
-  background: color-mix(in srgb, var(--color-neon-cyan) 8%, var(--color-bg-elevated));
-}
-
-.pill-accent::before,
-.pill-accent::after {
-  color: var(--color-neon-cyan);
-}
-
-/* ============================================================
-   HUD FRAME — corner brackets via ::before/::after pair on parents,
-   but we use a wrapper div approach for the JSX component.
-   This utility class adds four corner brackets to ANY container.
-   ============================================================ */
-
-.hud-frame {
-  position: relative;
-  padding: 1px;
-}
-
-.hud-frame > .hud-bracket {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.hud-frame > .hud-bracket::before,
-.hud-frame > .hud-bracket::after {
-  content: "";
-  position: absolute;
-  background: var(--color-neon-cyan);
-}
-
-/* horizontal arm */
-.hud-frame > .hud-bracket::before {
-  width: 100%;
-  height: 1.5px;
-}
-/* vertical arm */
-.hud-frame > .hud-bracket::after {
-  width: 1.5px;
-  height: 100%;
-}
-
-.hud-frame > .hud-bracket.tl { top: -1px; left: -1px; }
-.hud-frame > .hud-bracket.tl::before { top: 0; left: 0; }
-.hud-frame > .hud-bracket.tl::after { top: 0; left: 0; }
-
-.hud-frame > .hud-bracket.tr { top: -1px; right: -1px; }
-.hud-frame > .hud-bracket.tr::before { top: 0; right: 0; }
-.hud-frame > .hud-bracket.tr::after { top: 0; right: 0; }
-
-.hud-frame > .hud-bracket.bl { bottom: -1px; left: -1px; }
-.hud-frame > .hud-bracket.bl::before { bottom: 0; left: 0; }
-.hud-frame > .hud-bracket.bl::after { bottom: 0; left: 0; }
-
-.hud-frame > .hud-bracket.br { bottom: -1px; right: -1px; }
-.hud-frame > .hud-bracket.br::before { bottom: 0; right: 0; }
-.hud-frame > .hud-bracket.br::after { bottom: 0; right: 0; }
-
-.hud-frame.is-magenta > .hud-bracket::before,
-.hud-frame.is-magenta > .hud-bracket::after {
-  background: var(--color-neon-magenta);
-}
-
-/* HUD label bar — sits on top edge of frame */
-.hud-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-neon-cyan);
-  background: var(--color-bg-base);
-  border: 1px solid var(--color-neon-cyan);
-}
-
-.hud-label .led {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--color-neon-cyan);
-  box-shadow: 0 0 8px var(--color-neon-cyan);
-  animation: ledBlink 2s ease-in-out infinite;
-}
-
-.hud-label .led.is-magenta {
-  background: var(--color-neon-magenta);
-  box-shadow: 0 0 8px var(--color-neon-magenta);
-}
-
-.hud-label .led.is-amber {
-  background: var(--color-neon-amber);
-  box-shadow: 0 0 8px var(--color-neon-amber);
-}
-
-@keyframes ledBlink {
-  0%, 60%, 100% { opacity: 1; }
-  30% { opacity: 0.4; }
-}
-
-/* ============================================================
-   GLITCH TEXT — applied on hover/focus of interactive elements
-   ============================================================ */
-
-.glitch-text {
-  position: relative;
-  display: inline-block;
-}
-
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 80ms var(--ease-out);
-}
-
-.glitch-text::before {
-  color: var(--color-neon-cyan);
-  transform: translate(-2px, 0);
-  clip-path: inset(0 0 55% 0);
-}
-
-.glitch-text::after {
-  color: var(--color-neon-magenta);
-  transform: translate(2px, 0);
-  clip-path: inset(55% 0 0 0);
-}
-
-.glitch-text:hover::before,
-.glitch-text:hover::after,
-.glitch-text:focus-visible::before,
-.glitch-text:focus-visible::after,
-.glitch-text.is-active::before,
-.glitch-text.is-active::after {
-  opacity: 0.85;
-  animation: glitchSnap 240ms steps(3, end);
-}
-
-@keyframes glitchSnap {
-  0%   { transform: translate(-2px, 0); }
-  33%  { transform: translate(2px, -1px); }
-  66%  { transform: translate(-1px, 1px); }
-  100% { transform: translate(0, 0); opacity: 0; }
-}
-
-/* ============================================================
-   CURSOR BLINK
-   ============================================================ */
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-.cursor-blink {
-  animation: blink 1s step-end infinite;
-}
-
-/* Hero scroll hint — subtle vertical nudge */
-@keyframes heroChevronNudge {
-  0%, 100% {
-    transform: translateY(0);
-    opacity: 0.65;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-}
-
-.hero-scroll-chevron {
-  animation: heroChevronNudge 2.2s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-scroll-chevron {
-    animation: none;
-  }
-}
-
-/* ============================================================
-   PHOTO BED — full-bleed image layer behind a section or card
-   ============================================================ */
 
 .photo-bed {
   position: absolute;
@@ -711,150 +437,99 @@ img {
 }
 
 /* ============================================================
-   HAIRLINE ROW — borderless list rhythm (about facts, experience)
+   WORDMARK — public/name.jpg
+   The jpg has a black ground; `screen` drops black to transparent
+   against --nc-void. Cheaper than shipping an alpha PNG.
    ============================================================ */
 
-.rule-row {
-  border-top: 1px solid var(--color-border);
-  transition: border-color 200ms var(--ease-out);
+.wordmark {
+  width: min(780px, 90vw);
+  height: auto;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 28px rgba(252, 238, 10, 0.4));
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .rule-row:hover {
-    border-top-color: var(--color-neon-cyan);
+/* Rare idle degradation — reads as signal loss, not a loop */
+@keyframes wordmarkGlitch {
+  0%,
+  97%,
+  100% {
+    transform: translate(0);
+    filter: drop-shadow(0 0 28px rgba(252, 238, 10, 0.4));
+  }
+  97.5% {
+    transform: translate(-3px, 1px);
+    filter: drop-shadow(3px 0 0 rgba(237, 30, 121, 0.7))
+      drop-shadow(-3px 0 0 rgba(37, 225, 237, 0.7));
+  }
+  98.5% {
+    transform: translate(2px, -1px);
+    filter: drop-shadow(-2px 0 0 rgba(237, 30, 121, 0.7))
+      drop-shadow(2px 0 0 rgba(37, 225, 237, 0.7));
   }
 }
 
-/* ============================================================
-   FILM GRAIN — global static noise, sits above everything
-   ============================================================ */
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  pointer-events: none;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  background-size: 140px 140px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+.wordmark-idle {
+  animation: wordmarkGlitch 7s steps(1, end) infinite;
 }
 
 /* ============================================================
-   PROJECT COLLAGE — overlapping, tilted screenshots
+   ANIMATION PRIMITIVES
    ============================================================ */
 
-.collage {
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
-}
-
-.collage-shot {
-  filter: drop-shadow(0 22px 45px rgba(0, 0, 0, 0.6));
-  transition: transform 320ms var(--ease-out);
-}
-
-.collage-shot__inner {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  clip-path: var(--clip-corner-lg);
-  box-shadow: inset 0 0 0 1px var(--color-neon-cyan);
-  background: var(--color-bg-elevated);
-}
-
-.collage-shot__inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-}
-
-.collage-meta {
-  margin-top: 1.75rem;
-  max-width: 34ch;
-}
-
-@media (min-width: 1024px) {
-  .collage {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 0;
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
   }
-
-  .collage__item { grid-row: 1; }
-  .collage__item.is-a { grid-column: 1 / span 7; z-index: 2; }
-  .collage__item.is-b { grid-column: 6 / span 7; z-index: 1; margin-top: 11rem; }
-
-  .is-a .collage-shot { transform: rotate(-1.8deg); }
-  .is-b .collage-shot { transform: rotate(1.8deg); }
-
-  /* Keep each text block clear of the other card's overlap zone */
-  .is-a .collage-meta { max-width: 62%; }
-  .is-b .collage-meta { max-width: 62%; margin-left: auto; text-align: right; }
-  .is-b .collage-meta .meta-row { justify-content: flex-end; }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .collage-shot:hover {
-    transform: rotate(0deg) translateY(-8px);
+  51%,
+  100% {
+    opacity: 0;
   }
 }
 
-/* ============================================================
-   STICKER — scattered, tilted skill tag
-   ============================================================ */
-
-.sticker {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 0.95rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  background: var(--color-bg-elevated);
-  color: var(--color-text-secondary);
-  clip-path: var(--clip-tag);
-  box-shadow: inset 0 0 0 1px var(--color-border);
-  transform: rotate(var(--tilt, 0deg)) translateY(var(--rise, 0px));
-  transition: transform 220ms var(--ease-out),
-              color 220ms var(--ease-out),
-              box-shadow 220ms var(--ease-out);
+.blink {
+  animation: blink 1s step-end infinite;
 }
 
-.sticker.is-cyan {
-  color: var(--color-neon-cyan);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-neon-cyan) 45%, transparent);
-}
-
-.sticker.is-magenta {
-  color: var(--color-neon-magenta);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-neon-magenta) 45%, transparent);
-}
-
-.sticker.is-amber {
-  color: var(--color-neon-amber);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-neon-amber) 45%, transparent);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .sticker:hover {
-    transform: rotate(0deg) translateY(-4px) scale(1.05);
-    color: var(--color-text-primary);
-    box-shadow: inset 0 0 0 1px var(--color-neon-cyan), 0 0 20px var(--color-glow-cyan);
+@keyframes ledPulse {
+  0%,
+  60%,
+  100% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.35;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sticker { transform: none; }
-  .collage-shot { transform: none; }
+.led {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--color-nc-magenta);
+  box-shadow: 0 0 8px var(--color-nc-magenta);
+  animation: ledPulse 2s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.nudge {
+  animation: nudge 2.2s ease-in-out infinite;
 }
 
 /* ============================================================
-   SCROLLBAR — thin, neon thumb
+   SCROLLBAR
    ============================================================ */
 
 ::-webkit-scrollbar {
@@ -862,19 +537,19 @@ body::after {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg-base);
+  background: var(--color-nc-void);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-nc-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neon-cyan);
+  background: var(--color-nc-yellow);
 }
 
 /* ============================================================
-   REDUCED MOTION — Accessibility
+   REDUCED MOTION
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -882,24 +557,249 @@ body::after {
     scroll-behavior: auto;
   }
 
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 
-  .grid-bg::before,
-  .grid-bg::after {
-    animation: none;
-    opacity: calc(0.08 * var(--hero-scroll-fade, 1));
-  }
-
-  .hud-label .led {
+  .wordmark-idle {
     animation: none;
   }
+}
 
-  .glitch-text::before,
-  .glitch-text::after {
-    display: none;
+/* ============================================================
+   TEXT MASK — About statement is a window onto the alley plate.
+   Solid yellow is declared on the element itself; these rules only
+   take effect where background-clip:text is supported, so the
+   statement can never render invisible.
+   ============================================================ */
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .mask-type {
+    background-image: url("/assets/alley.jpg");
+    background-size: 120% auto;
+    background-position: center 40%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: saturate(1.5) contrast(1.15) brightness(1.25);
+    animation: maskDrift 28s ease-in-out infinite alternate;
   }
+}
+
+@keyframes maskDrift {
+  from {
+    background-position: center 34%;
+  }
+  to {
+    background-position: center 52%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mask-type {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   ACCORDION IMAGE SLIDER — Off-Grid
+   Desktop: horizontal strips, flex-grow on hover/focus.
+   Mobile: unstacks to a plain list, everything already open.
+   ============================================================ */
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--color-nc-border);
+}
+
+.accordion-strip {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-nc-surface);
+  padding: 1.25rem 1.5rem;
+}
+
+.accordion-strip__label {
+  display: none;
+}
+
+.accordion-strip__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+@media (min-width: 768px) {
+  .accordion {
+    flex-direction: row;
+    height: 26rem;
+    gap: 1px;
+  }
+
+  .accordion-strip {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: flex-grow 420ms var(--ease-out);
+  }
+
+  .accordion-strip.is-wide {
+    flex-grow: 2.2;
+  }
+
+  /* Photo bed, only where a strip has one */
+  .accordion-strip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--strip-img, none);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.32;
+    transition: opacity 420ms var(--ease-out);
+  }
+
+  .accordion-strip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(5, 5, 8, 0.92) 0%,
+      rgba(5, 5, 8, 0.35) 55%,
+      transparent 100%
+    );
+  }
+
+  /* Collapsed: rotated label only */
+  .accordion-strip__label {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2rem;
+    color: var(--color-nc-text-muted);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    transition: opacity 260ms var(--ease-out);
+  }
+
+  /* Expanded: real content */
+  .accordion-strip__body {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    padding: 1.75rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 300ms var(--ease-out);
+  }
+
+  .accordion-strip:hover,
+  .accordion-strip:focus-within {
+    flex-grow: 5;
+  }
+
+  .accordion-strip:hover::before,
+  .accordion-strip:focus-within::before {
+    opacity: 0.6;
+  }
+
+  .accordion-strip:hover .accordion-strip__label,
+  .accordion-strip:focus-within .accordion-strip__label {
+    opacity: 0;
+  }
+
+  .accordion-strip:hover .accordion-strip__body,
+  .accordion-strip:focus-within .accordion-strip__body {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 90ms;
+  }
+
+  /* Yellow edge marks the active strip */
+  .accordion-strip:hover,
+  .accordion-strip:focus-within {
+    box-shadow: inset 0 -3px 0 var(--color-nc-yellow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-strip,
+  .accordion-strip::before,
+  .accordion-strip__label,
+  .accordion-strip__body {
+    transition: none;
+  }
+}
+
+/* Horizontal pan panes: one content-width each. Content width is the viewport
+   minus the sector rail, so panes stay aligned instead of drifting by 76px. */
+@media (min-width: 1024px) {
+  .panel-pane {
+    width: calc(100vw - var(--rail-w));
+  }
+}
+
+/* ============================================================
+   SOFT GRID — section-level backdrop. Softer than .gridlines
+   (larger cell, lower alpha) and fades out at the edges so it
+   reads as depth rather than graph paper.
+   ============================================================ */
+
+.soft-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(37, 225, 237, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 225, 237, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 65% at 50% 45%,
+    #000 35%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 65% at 50% 45%,
+    #000 35%,
+    transparent 100%
+  );
+}
+
+/* One brighter horizon line, so the grid has a floor */
+.soft-grid::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(252, 238, 10, 0.25),
+    transparent
+  );
+}
+
+/* Centred text with an uneven last line reads as misaligned even when it is
+   perfectly centred. `balance` evens the line lengths out. */
+.balance {
+  text-wrap: balance;
 }
