@@ -1,0 +1,6 @@
+Review the existing design and frontend across the typography, layouts, colors, and design system. With the taste skill I've attached, I want to make this portfolio an experience:  
+\- A terminal boot loader that is actually interesting and has a unique animation, with the typography being genuinely unique.  
+\- Use a different font that you think is aligning with Cyberpunk better, because I don't think the current one is good.  
+\- Keep the tone casual and human-sounding. Stuff like "full stack dev in Toronto" and "I like the boring parts" doesn't sound interesting at all.  
+\- When mentioning leadership, lead on AWS Student Builder Groups first and then GDG.  
+\- Part of the design pass: change the layouts of stuff. Make things unique and genuinely experienced. That's nice to scroll through with either scroll-through animations, maybe a different nav bar, or a unique way of having a nav bar. Instead of being on the top, maybe it can be something related to Cyberpunk and Terminal and navigating that way. Propose a new design for the actual portfolio.
