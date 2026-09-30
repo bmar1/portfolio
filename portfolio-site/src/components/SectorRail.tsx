@@ -10,21 +10,33 @@ export default function SectorRail() {
   const inputRef = useRef<HTMLInputElement>(null)
   const { scrollYProgress } = useScroll()
 
-  // Active sector: same IntersectionObserver approach the old Navbar used.
+  // A viewport band tracks tall sections without requiring a percentage of
+  // the whole section to fit on screen.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id)
-        })
-      },
-      { threshold: 0.25, rootMargin: '-80px 0px -45% 0px' },
-    )
-    SECTORS.forEach((s) => {
-      const el = document.getElementById(s.target)
-      if (el) observer.observe(el)
-    })
-    return () => observer.disconnect()
+    let observer: IntersectionObserver | undefined
+    const observe = () => {
+      observer?.disconnect()
+      const top = Math.min(80, window.innerHeight / 4)
+      const bottom = Math.max(0, window.innerHeight - top - 24)
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) setActive(entry.target.id)
+          })
+        },
+        { threshold: 0, rootMargin: `-${top}px 0px -${bottom}px 0px` },
+      )
+      SECTORS.forEach((sector) => {
+        const el = document.getElementById(sector.target)
+        if (el) observer?.observe(el)
+      })
+    }
+    observe()
+    window.addEventListener('resize', observe)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', observe)
+    }
   }, [])
 
   // "/" focuses the prompt from anywhere on the page.

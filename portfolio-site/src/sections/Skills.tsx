@@ -3,15 +3,30 @@ import { jumpTo, parseCommand, resolveSector } from '../utils/commands'
 import { prefersReducedMotion } from '../utils/motion'
 
 const STACK: Record<string, string[]> = {
-  languages: ['Java', 'TypeScript', 'JavaScript', 'C', 'C++', 'SQL'],
-  frameworks: ['Spring Boot', 'React', 'Node.js', 'Express.js'],
-  infra: ['AWS EC2', 'AWS RDS', 'Docker', 'Kubernetes', 'GKE', 'GitHub Actions'],
+  languages: ['Java', 'JavaScript', 'Python', 'HTML', 'CSS', 'TypeScript', 'SQL'],
+  frameworks: ['React', 'Spring Boot', '.NET', 'ASP.NET', 'Node.js', 'Express.js'],
+  cloud: ['AWS EC2', 'AWS RDS', 'CloudWatch', 'GCP GKE', 'GCP GCE', 'Docker', 'Kubernetes', 'GitHub Actions'],
   data: ['PostgreSQL', 'MongoDB', 'Oracle', 'RabbitMQ'],
-  testing: ['JUnit', 'Mockito', 'Jest'],
-  tools: ['Git', 'Jira', 'Cursor', 'Claude'],
+  testing: ['JUnit', 'Mockito'],
+  tools: ['Git', 'Jira', 'VS Code', 'Claude', 'Cursor'],
 }
 
-type Row = { kind: 'in' | 'out' | 'err' | 'head'; text: string }
+const SHIPPED: [string, string][] = [
+  ['Spring Boot', 'Sikh Sparks, Plated, Nest'],
+  ['ASP.NET', 'Ontario Public Service'],
+  ['React', 'OPS, Liza Bilal, Plated, Nest'],
+  ['RabbitMQ', 'Nest'],
+  ['GCP GKE', 'Nest'],
+  ['AWS EC2', 'Liza Bilal, Plated'],
+  ['Express.js', 'Liza Bilal'],
+  ['JUnit', 'Plated'],
+]
+
+const WHERE = new Map(SHIPPED)
+
+const shippedLine = (skill: string) => `${skill.padEnd(12)} -> ${WHERE.get(skill)}`
+
+type Row = { kind: 'in' | 'out' | 'err' | 'head' | 'ship'; text: string }
 
 const HELP: Row[] = [
   { kind: 'out', text: 'stack --all            print every group' },
@@ -23,10 +38,14 @@ const HELP: Row[] = [
 ]
 
 function allRows(): Row[] {
-  return Object.entries(STACK).flatMap(([group, items]) => [
-    { kind: 'head' as const, text: group },
-    { kind: 'out' as const, text: items.join('  ·  ') },
-  ])
+  return [
+    ...Object.entries(STACK).flatMap(([group, items]) => [
+      { kind: 'head' as const, text: group },
+      { kind: 'out' as const, text: items.join('  ·  ') },
+    ]),
+    { kind: 'head', text: 'shipped with' },
+    ...SHIPPED.map(([skill]) => ({ kind: 'ship' as const, text: shippedLine(skill) })),
+  ]
 }
 
 function filterRows(term: string): Row[] {
@@ -43,6 +62,9 @@ function filterRows(term: string): Row[] {
   return hits.flatMap(({ group, matched }) => [
     { kind: 'head' as const, text: group },
     { kind: 'out' as const, text: matched.join('  ·  ') },
+    ...matched
+      .filter((m) => WHERE.has(m))
+      .map((m) => ({ kind: 'ship' as const, text: shippedLine(m) })),
   ])
 }
 
@@ -158,7 +180,7 @@ export default function Skills() {
             <span className="led" aria-hidden />
             <span
               className="t-label"
-              style={{ color: 'var(--color-nc-yellow)', fontSize: '0.62rem' }}
+              style={{ color: 'var(--color-nc-yellow)', fontSize: '0.75rem' }}
             >
               bumar@nightcity — stack
             </span>
@@ -175,14 +197,15 @@ export default function Skills() {
                 className="t-mono"
                 style={{
                   lineHeight: 1.9,
+                  whiteSpace: row.kind === 'ship' ? 'pre-wrap' : undefined,
                   color:
-                    row.kind === 'in'
+                    row.kind === 'in' || row.kind === 'ship'
                       ? 'var(--color-nc-text)'
                       : row.kind === 'err'
                         ? 'var(--color-nc-magenta)'
                         : row.kind === 'head'
                           ? 'var(--color-nc-yellow)'
-                          : 'var(--color-nc-text-muted)',
+                          : '#a7b2c1',
                 }}
               >
                 {row.kind === 'in' && (
@@ -192,6 +215,9 @@ export default function Skills() {
                 )}
                 {row.kind === 'head' && (
                   <span style={{ color: 'var(--color-nc-cyan)' }}>// </span>
+                )}
+                {row.kind === 'ship' && (
+                  <span style={{ color: 'var(--color-nc-success)' }} aria-hidden>+ </span>
                 )}
                 {row.text}
               </div>
@@ -226,9 +252,9 @@ export default function Skills() {
 
         <p
           className="t-mono mt-4 text-center"
-          style={{ color: 'var(--color-nc-text-dim)' }}
+          style={{ color: 'var(--color-nc-text-muted)' }}
         >
-          no progress bars, no &quot;expert&quot; badges. just what I build with.
+          straight off the resume. try stack --filter spring
         </p>
       </div>
     </section>
