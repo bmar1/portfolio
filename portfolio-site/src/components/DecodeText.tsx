@@ -13,6 +13,7 @@ type Props = {
   speed?: number
   className?: string
   style?: React.CSSProperties
+  id?: string
   as?: 'span' | 'h1' | 'h2' | 'h3' | 'p'
 }
 
@@ -30,6 +31,7 @@ export default function DecodeText({
   speed = 42,
   className,
   style,
+  id,
   as: Tag = 'span',
 }: Props) {
   const reduce = prefersReducedMotion()
@@ -82,7 +84,7 @@ export default function DecodeText({
   }, [text, animating, delay, speed])
 
   return (
-    <Tag className={className} style={style} aria-label={text}>
+    <Tag id={id} className={className} style={style} aria-label={text}>
       <span aria-hidden>{display}</span>
     </Tag>
   )
