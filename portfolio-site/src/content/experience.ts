@@ -7,6 +7,9 @@ export interface Role {
   title: string
   dates: string
   active?: boolean
+  upcoming?: boolean
+  /** Square company mark shown as a badge on the floor. */
+  logo?: string
   trim: Trim
   summary: string
   points: string[]
@@ -16,12 +19,28 @@ export interface Role {
 
 export const ROLES: Role[] = [
   {
+    id: 'infotech',
+    org: 'Infotech',
+    title: 'Software Engineer',
+    dates: 'Incoming Winter 2027',
+    upcoming: true,
+    logo: '/assets/logo-infotech.png',
+    trim: 'cyan',
+    summary: 'Next contract lined up. Details land here once the work starts.',
+    points: [
+      "Starting Winter '27. Scope is still being finalized on their end.",
+    ],
+    outcomes: [],
+    tech: [],
+  },
+  {
     id: 'ops',
     org: 'Ontario Public Service',
     team: 'MPBSDP, Cluster Applications Branch',
     title: 'Software Developer Co\u2011op',
     dates: 'Fall 2026',
     active: true,
+    logo: '/assets/logo-ontario.png',
     trim: 'yellow',
     summary: "Getting a ministry's ticketing system off a vendor-locked platform.",
     points: [

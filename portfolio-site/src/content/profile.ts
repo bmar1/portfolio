@@ -11,6 +11,8 @@ export interface Attribute {
   name: string
   level: number
   reason: Line
+  /** Satellite nodes around this attribute in the neural matrix. */
+  perks: string[]
 }
 
 export const PROFILE = {
@@ -42,37 +44,43 @@ export const PROFILE = {
       name: 'Technical Ability',
       level: 17,
       reason: { text: 'Spring Boot, .NET, AWS, GKE. The stuff behind the UI.', draft: true },
+      perks: ['Spring Boot', '.NET', 'AWS', 'GKE', 'RabbitMQ', 'Docker'],
     },
     {
       name: 'Intelligence',
       level: 15,
       reason: { text: 'Systems design on weekends, for fun.', draft: true },
+      perks: ['System design', 'Queues', 'Pipelines', 'Adapters'],
     },
     {
       name: 'Reflexes',
       level: 13,
       reason: { text: 'Ship in days with Claude and Cursor, then test it properly.', draft: true },
+      perks: ['Claude', 'Cursor', 'React', 'JUnit'],
     },
     {
       name: 'Body',
       level: 14,
       reason: { text: 'Gym, consistently. Protein goals.', draft: true },
+      perks: ['Gym', 'Protein goals', 'Trails'],
     },
     {
       name: 'Cool',
       level: 12,
       reason: { text: 'Runs an AWS group and a GDG chapter without panicking.', draft: true },
+      perks: ['AWS Builder Group', 'GDG Seneca', 'Public speaking'],
     },
   ] satisfies Attribute[],
   cyberware: ['Spring Boot', 'React', '.NET', 'AWS', 'GKE', 'RabbitMQ', 'Docker', 'Claude', 'Cursor'],
   affiliations: [
-    { org: 'AWS Student Builder Groups', role: 'Group Leader', detail: '8+ event cloud curriculum, 75+ students' },
+    { org: 'AWS Student Builder Group', role: 'Group Leader', detail: '8+ event cloud curriculum, 90+ students' },
     { org: 'Google Developer Groups, Seneca', role: 'President', detail: '3+ workshops, 120+ attendees a term' },
   ],
   facts: [
     ['Based in', 'Toronto, ON'],
     ['Studying', 'Seneca Polytechnic'],
     ['Graduating', 'August 2027'],
+    ['Next up', "Infotech, Winter '27"],
   ] as [string, string][],
 }
 
