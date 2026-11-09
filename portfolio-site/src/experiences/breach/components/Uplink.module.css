@@ -1,0 +1,58 @@
+.panel {
+  margin-top: 2rem;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  display: grid;
+  gap: 1.75rem;
+}
+
+.statusLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4ddc8a;
+  width: fit-content;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  background: #4ddc8a;
+  box-shadow: 0 0 8px #4ddc8a;
+}
+
+.pitch {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--nk-body);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.availability {
+  font-size: 0.875rem;
+  color: var(--nk-muted);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 2.5rem;
+  font-size: 0.8125rem;
+  color: var(--nk-muted);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--nk-gold-bright);
+}

@@ -1,0 +1,204 @@
+.section {
+  position: relative;
+  border-bottom: 1px solid var(--bd-border-soft);
+  background: var(--bd-surface);
+}
+
+.header {
+  padding: 4.5rem 0 1.5rem;
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1.2;
+  font-weight: 500;
+  max-width: 22ch;
+}
+
+.sub {
+  margin: 0.9rem 0 0;
+  max-width: 48ch;
+  color: var(--bd-text-dim);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ---- desktop: pinned scale scene ---- */
+.scene {
+  position: relative;
+  min-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0 4rem;
+}
+
+.scaleWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--bd-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.labelAws {
+  color: var(--bd-green);
+}
+
+.labelGdg {
+  color: var(--bd-text-dim);
+}
+
+.beam {
+  position: relative;
+  height: 2px;
+  background: var(--bd-border);
+  display: flex;
+}
+
+.fulcrum {
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  width: 1px;
+  height: 22px;
+  background: var(--bd-text-mute);
+  transform: translateX(-50%);
+}
+
+.fillAws,
+.fillGdg {
+  position: absolute;
+  top: -3px;
+  height: 8px;
+}
+
+.fillAws {
+  right: 50%;
+  background: var(--bd-green);
+  transform-origin: right;
+  box-shadow: 0 0 10px rgba(61, 220, 116, 0.4);
+}
+
+.fillGdg {
+  left: 50%;
+  background: var(--bd-text-dim);
+  transform-origin: left;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.statGroup {
+  display: flex;
+  gap: 1.75rem;
+}
+
+.statGroup:last-child {
+  justify-content: flex-end;
+}
+
+.statValue {
+  display: block;
+  font-family: var(--bd-font-mono);
+  font-size: 1.6rem;
+}
+
+.statGroup:first-child .statValue {
+  color: var(--bd-green);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--bd-text-mute);
+  margin-top: 0.15rem;
+}
+
+.captionBox {
+  position: relative;
+  min-height: 90px;
+  margin-top: 2.5rem;
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--bd-text);
+  max-width: 54ch;
+}
+
+.captionSource {
+  display: block;
+  font-family: var(--bd-font-mono);
+  font-size: 0.7rem;
+  color: var(--bd-text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+/* ---- mobile / reduced fallback: static stacked groups ---- */
+.fallback {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.fallbackGroup {
+  border-left: 2px solid var(--bd-border);
+  padding-left: 1.25rem;
+}
+
+.fallbackGroup[data-faction='aws'] {
+  border-left-color: var(--bd-green-dim);
+}
+
+.fallbackRole {
+  font-family: var(--bd-font-mono);
+  font-size: 0.78rem;
+  color: var(--bd-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fallbackOrg {
+  margin: 0.3rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.fallbackStats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0.9rem 0;
+}
+
+.fallbackLearned {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.fallbackLearned li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--bd-text-dim);
+}
