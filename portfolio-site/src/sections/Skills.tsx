@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { jumpTo, parseCommand, resolveSector } from '../utils/commands'
 import { prefersReducedMotion } from '../utils/motion'
+import SectionBackdrop from '../components/SectionBackdrop'
 
 const STACK: Record<string, string[]> = {
   languages: ['Java', 'JavaScript', 'Python', 'HTML', 'CSS', 'TypeScript', 'SQL'],
@@ -162,8 +163,9 @@ export default function Skills() {
   const shown = rows.slice(0, reduce ? rows.length : typed)
 
   return (
-    <section id="skills" ref={ref} className="section">
-      <div className="container">
+    <section id="skills" ref={ref} className="section skills-section">
+      <SectionBackdrop tone="magenta" />
+      <div className="container relative z-10">
         {/* No eyebrow. The window chrome says what this is. */}
         <div
           className="panel scanlines relative mx-auto max-w-4xl overflow-hidden"

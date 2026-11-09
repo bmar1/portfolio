@@ -119,6 +119,13 @@ export default function Contact() {
           <span style={{ color: 'var(--color-nc-magenta)' }}>]</span>
           {' · © 2026 Bilal Umar · React + Vite'}
         </span>
+        <span className="eol-credits">
+          Spadina at night by{' '}
+          <a href="https://commons.wikimedia.org/wiki/File:Chinatown_-_Spadina_(2204725719).jpg" target="_blank" rel="noopener noreferrer">
+            松林 L
+          </a>{' '}
+          (CC BY 2.0)
+        </span>
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: getScrollBehavior() })}

@@ -1,0 +1,268 @@
+.section {
+  position: relative;
+  border-bottom: 1px solid var(--bd-border-soft);
+  background: var(--bd-surface);
+}
+
+.header {
+  padding: 4.5rem 0 2.5rem;
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 1.2;
+  font-weight: 500;
+  max-width: 20ch;
+}
+
+.sub {
+  margin: 0.9rem 0 0;
+  max-width: 48ch;
+  color: var(--bd-text-dim);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ---- desktop: horizontal-pan pinned wrap ---- */
+.wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  will-change: transform;
+  padding-left: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .track {
+    padding-left: 3rem;
+  }
+}
+
+.clip {
+  flex: 0 0 min(88vw, 760px);
+  min-height: 72vh;
+  padding: 2rem 1.75rem 2.5rem;
+  border-left: 1px solid var(--bd-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.1rem;
+}
+
+.clip:last-child {
+  border-right: 1px solid var(--bd-border);
+}
+
+/* ---- mobile fallback: explicit stacked flow, no transforms ---- */
+@media (max-width: 767px) {
+  .wrap {
+    overflow: visible;
+  }
+  .track {
+    display: flex;
+    flex-direction: column;
+    transform: none !important;
+  }
+  .clip {
+    flex: 1 1 auto;
+    min-height: auto;
+    border-left: none;
+    border-top: 1px solid var(--bd-border);
+    padding: 2rem 0;
+  }
+  .clip:last-child {
+    border-right: none;
+    border-bottom: 1px solid var(--bd-border);
+  }
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statusChip {
+  font-family: var(--bd-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--bd-border);
+  color: var(--bd-text-dim);
+}
+
+.statusChip[data-status='active'] {
+  color: var(--bd-green);
+  border-color: var(--bd-green-dim);
+  background: var(--bd-green-wash);
+}
+
+.statusChip[data-status='queued'] {
+  color: var(--bd-text-dim);
+  border-style: dashed;
+}
+
+.statusChip[data-status='logged'] {
+  color: var(--bd-text-mute);
+}
+
+.dates {
+  font-family: var(--bd-font-mono);
+  font-size: 0.75rem;
+  color: var(--bd-text-mute);
+}
+
+.orgTitle {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--bd-text);
+}
+
+.org {
+  color: var(--bd-text-dim);
+  font-weight: 400;
+}
+
+.summary {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--bd-text);
+  max-width: 48ch;
+}
+
+/* Layer: audio waveform, deterministic bar heights derived from role data,
+   not Math.random, so it reads as a signal readout rather than noise. */
+.layerLabel {
+  font-family: var(--bd-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bd-text-mute);
+  margin-bottom: 0.4rem;
+}
+
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 32px;
+}
+
+.bar {
+  flex: 1;
+  background: var(--bd-border);
+  min-width: 2px;
+}
+
+.clip[data-status='active'] .bar {
+  background: var(--bd-green-dim);
+}
+
+/* Layer: thermal gauge, fill percentage mirrors queued / active / logged */
+.thermal {
+  height: 4px;
+  width: 100%;
+  background: var(--bd-surface-3);
+  position: relative;
+}
+
+.thermalFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: var(--bd-text-mute);
+}
+
+.clip[data-status='active'] .thermalFill {
+  background: var(--bd-green);
+  box-shadow: 0 0 10px rgba(61, 220, 116, 0.5);
+}
+
+.clip[data-status='queued'] .thermalFill {
+  background: transparent;
+  border-right: 1px dashed var(--bd-text-mute);
+}
+
+.points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.points li {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--bd-text-dim);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 1px;
+  background: var(--bd-text-mute);
+}
+
+.outcomes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.outcomeValue {
+  display: block;
+  font-family: var(--bd-font-mono);
+  font-size: 1.3rem;
+  color: var(--bd-text);
+}
+
+.clip[data-status='active'] .outcomeValue {
+  color: var(--bd-green);
+}
+
+.outcomeLabel {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--bd-text-mute);
+  margin-top: 0.15rem;
+}
+
+.emptyNote {
+  font-family: var(--bd-font-mono);
+  font-size: 0.8rem;
+  color: var(--bd-text-mute);
+  font-style: normal;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tech li {
+  font-family: var(--bd-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--bd-text-dim);
+  border: 1px solid var(--bd-border-soft);
+  padding: 0.2rem 0.5rem;
+}

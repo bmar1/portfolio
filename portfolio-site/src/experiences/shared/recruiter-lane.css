@@ -1,0 +1,190 @@
+/* Shared recruiter escape hatch. Deliberately plain and theme-neutral so it
+   reads the same regardless of which lab direction is active underneath. */
+
+.recruiter-toggle {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 9500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #0a0a0f;
+  background: #fcee0a;
+  border: none;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+}
+
+.recruiter-toggle__key {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(10, 10, 15, 0.18);
+  font-weight: 700;
+}
+
+.recruiter-lane {
+  position: fixed;
+  inset: 0;
+  z-index: 9600;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(4, 4, 8, 0.86);
+  backdrop-filter: blur(6px);
+}
+
+.recruiter-lane__panel {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  background: #0d0d14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  color: #e8e8e8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.recruiter-lane__close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e8e8e8;
+  border: none;
+  cursor: pointer;
+}
+
+.recruiter-lane__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #25e1ed;
+}
+
+.recruiter-lane__name {
+  margin: 0;
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+}
+
+.recruiter-lane__status {
+  margin: 0.5rem 0 0;
+  color: #fcee0a;
+  font-weight: 600;
+}
+
+.recruiter-lane__summary {
+  margin: 0.5rem 0 1.75rem;
+  color: #a7b2c1;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  max-width: 56ch;
+}
+
+.recruiter-lane__grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .recruiter-lane__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.recruiter-lane__grid h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a9bb0;
+}
+
+.recruiter-lane__grid ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: #e8e8e8;
+}
+
+.recruiter-lane__grid strong {
+  color: #fcee0a;
+}
+
+.recruiter-lane__chips {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.recruiter-lane__chips li {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+}
+
+.recruiter-lane__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.recruiter-lane__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  color: #e8e8e8;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.recruiter-lane__btn.is-primary {
+  color: #0a0a0f;
+  background: #fcee0a;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .recruiter-lane__panel {
+    animation: recruiterIn 220ms ease-out;
+  }
+}
+
+@keyframes recruiterIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

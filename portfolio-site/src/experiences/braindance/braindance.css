@@ -1,0 +1,124 @@
+/*
+  Braindance direction. Entropism crossed with Neo-Militarism: desaturated
+  greys, one dim terminal-green accent, cold red reserved for alerts and
+  the redacted recording. Hard 90-degree corners everywhere except a
+  handful of precise clip-path nicks on interactive elements. Everything
+  below is namespaced under .braindance-root so it cannot leak into the
+  main site, metro, or breach.
+*/
+
+.braindance-root {
+  --bd-void: #0a0a0c;
+  --bd-surface: #131316;
+  --bd-surface-2: #1a1a1e;
+  --bd-surface-3: #212126;
+  --bd-border: #38383e;
+  --bd-border-soft: #262629;
+
+  --bd-text: #d9d9d4;
+  --bd-text-dim: #94949a;
+  --bd-text-mute: #5c5c62;
+
+  --bd-green: #3ddc74;
+  --bd-green-dim: #1f5c3a;
+  --bd-green-wash: rgba(61, 220, 116, 0.08);
+
+  --bd-red: #ff4d58;
+  --bd-red-dim: #5c2228;
+  --bd-red-wash: rgba(255, 77, 88, 0.08);
+
+  --bd-font-display: 'Unbounded', 'Michroma', sans-serif;
+  --bd-font-alt: 'Michroma', 'Unbounded', sans-serif;
+  --bd-font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  background: var(--bd-void);
+  color: var(--bd-text);
+  font-family: var(--bd-font-display);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+.braindance-root * {
+  box-sizing: border-box;
+}
+
+.braindance-root img {
+  max-width: 100%;
+  display: block;
+}
+
+.braindance-root ::selection {
+  background: var(--bd-green-dim);
+  color: var(--bd-text);
+}
+
+.braindance-root a {
+  color: inherit;
+}
+
+.braindance-root button {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Fixed grain layer, pointer-events none, never on a scrolling container
+   per the perf guardrails: this is the one and only grain pass for the
+   whole page, composited once. */
+.braindance-root .bd-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.5),
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+.braindance-root .bd-scanlines {
+  position: relative;
+}
+
+.braindance-root .bd-scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(61, 220, 116, 0.025) 3px,
+    rgba(61, 220, 116, 0.025) 4px
+  );
+}
+
+.braindance-root .bd-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .braindance-root .bd-container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .braindance-root * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

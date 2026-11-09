@@ -1,19 +1,22 @@
-import GigJournal from '../components/GigJournal'
+import CareerTower from '../components/CareerTower'
+import SectionBackdrop from '../components/SectionBackdrop'
 import SectionHeading from '../components/SectionHeading'
 
 export default function Experience() {
   return (
     <section
       id="experience"
-      className="section reading-section experience-section soft-grid"
+      className="section reading-section experience-section"
       aria-labelledby="experience-heading"
     >
+      <SectionBackdrop tone="yellow" />
       <div className="container relative z-10">
         <SectionHeading id="experience-heading" text="Where I've worked" />
         <p className="section-lede">
-          Three gigs so far. The current one is at Ontario Public Service.
+          Two floors cleared, I'm on the third at Ontario Public Service, and Infotech is going up
+          for Winter '27. Pick a floor.
         </p>
-        <GigJournal />
+        <CareerTower />
       </div>
     </section>
   )

@@ -1,0 +1,84 @@
+.section {
+  position: relative;
+  padding: 5.5rem 0 6rem;
+}
+
+.timecode {
+  font-family: var(--bd-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bd-text-mute);
+  margin: 0 0 1.5rem;
+}
+
+.heading {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  line-height: 1.15;
+  font-weight: 500;
+  max-width: 16ch;
+}
+
+.availability {
+  margin: 1.1rem 0 0;
+  font-size: 1.05rem;
+  color: var(--bd-green);
+  font-family: var(--bd-font-mono);
+}
+
+.pitch {
+  margin: 1.25rem 0 0;
+  max-width: 50ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--bd-text-dim);
+}
+
+.actions {
+  margin-top: 2.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--bd-font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.btnPrimary {
+  background: var(--bd-green);
+  color: var(--bd-void);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+.btnPrimary:hover {
+  background: #52e889;
+}
+
+.btnSecondary {
+  color: var(--bd-text);
+  border: 1px solid var(--bd-border);
+}
+
+.btnSecondary:hover {
+  border-color: var(--bd-text-dim);
+  background: var(--bd-surface-2);
+}
+
+.footerNote {
+  margin-top: 3.5rem;
+  font-family: var(--bd-font-mono);
+  font-size: 0.72rem;
+  color: var(--bd-text-mute);
+}

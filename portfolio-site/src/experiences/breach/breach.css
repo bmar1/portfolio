@@ -1,0 +1,205 @@
+/**
+ * BREACH PROTOCOL direction, page-level tokens and resets.
+ * Everything lives under .breach-root so nothing leaks into the main site,
+ * braindance, or metro. Neo-Kitsch law: gold + purple over near-black,
+ * precise symmetrical clipped corners, slow 300-500ms transitions.
+ */
+
+.breach-root {
+  /* === Neo-Kitsch tokens === */
+  --nk-deep: #0a0812;
+  --nk-deep-2: #120d1d;
+  --nk-surface: #161020;
+  --nk-gold: #d4af37;
+  --nk-gold-bright: #f5d060;
+  --nk-ivory: #ece6da;
+  --nk-chrome: #c7c3cc;
+  --nk-purple: #2a1540;
+  --nk-purple-bright: #b084e8;
+  --nk-danger: #e8536a;
+
+  /* body copy stays ivory/chrome, gold is reserved for accents + headings */
+  --nk-body: #d9d3e4;
+  --nk-muted: #948fa6;
+
+  --nk-corner: 18px;
+  --nk-corner-sm: 10px;
+  --nk-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: var(--nk-deep);
+  color: var(--nk-body);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.breach-root * {
+  box-sizing: border-box;
+}
+
+.breach-root ::selection {
+  background: var(--nk-gold);
+  color: var(--nk-deep);
+}
+
+.breach-root a {
+  color: inherit;
+}
+
+.breach-root button {
+  font-family: inherit;
+}
+
+/* === Shared layout primitives === */
+
+.breach-section {
+  position: relative;
+  width: 100%;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 4rem);
+}
+
+.breach-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.breach-daemonTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nk-purple-bright);
+  margin: 0 0 0.75rem;
+}
+
+.breach-daemonTag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--nk-purple-bright);
+  box-shadow: 0 0 8px var(--nk-purple-bright);
+}
+
+.breach-h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.08;
+  color: var(--nk-gold-bright);
+  margin: 0 0 1rem;
+  text-shadow: 0 0 24px rgba(212, 175, 55, 0.18);
+}
+
+.breach-lede {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--nk-body);
+  margin: 0 0 2rem;
+}
+
+/* precise, symmetrical clipped-corner panel shape, used everywhere */
+.breach-panel {
+  position: relative;
+  background: linear-gradient(155deg, var(--nk-surface) 0%, var(--nk-deep-2) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  clip-path: polygon(
+    var(--nk-corner) 0,
+    calc(100% - var(--nk-corner)) 0,
+    100% var(--nk-corner),
+    100% calc(100% - var(--nk-corner)),
+    calc(100% - var(--nk-corner)) 100%,
+    var(--nk-corner) 100%,
+    0 calc(100% - var(--nk-corner)),
+    0 var(--nk-corner)
+  );
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(245, 208, 96, 0.08);
+}
+
+.breach-panel--sm {
+  --nk-corner: var(--nk-corner-sm);
+}
+
+.breach-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.95rem 1.75rem;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  transition: transform 350ms var(--nk-ease), box-shadow 350ms var(--nk-ease), background 350ms var(--nk-ease);
+}
+
+.breach-btn--primary {
+  color: var(--nk-deep);
+  background: linear-gradient(135deg, var(--nk-gold) 0%, var(--nk-gold-bright) 55%, var(--nk-gold) 100%);
+  box-shadow: 0 6px 26px rgba(212, 175, 55, 0.32);
+}
+
+.breach-btn--primary:hover {
+  box-shadow: 0 0 28px rgba(212, 175, 55, 0.55), 0 0 60px rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+}
+
+.breach-btn--ghost {
+  color: var(--nk-ivory);
+  background: rgba(212, 175, 55, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.breach-btn--ghost:hover {
+  background: rgba(212, 175, 55, 0.14);
+  border-color: var(--nk-gold-bright);
+  color: var(--nk-gold-bright);
+  transform: translateY(-2px);
+}
+
+.breach-btn:active {
+  transform: scale(0.98);
+}
+
+.breach-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--nk-chrome);
+  background: rgba(192, 192, 200, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.3rem 0.65rem;
+}
+
+.breach-visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .breach-h2 {
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+  }
+}
