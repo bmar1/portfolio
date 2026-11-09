@@ -1,7 +1,8 @@
 import { Cat, Dumbbell, Gamepad2, Mountain, Network, Salad, type LucideIcon } from 'lucide-react'
+import SectionBackdrop from '../components/SectionBackdrop'
 import SectionHeading from '../components/SectionHeading'
 
-type Art = 'photo' | 'icon' | 'diagram' | 'topo'
+type Art = 'photo' | 'icon' | 'diagram'
 
 interface Tile {
   id: string
@@ -41,7 +42,9 @@ const TILES: Tile[] = [
     kicker: 'Daily quest',
     copy: 'Lifting heavy things, consistently.',
     icon: Dumbbell,
-    art: 'icon',
+    art: 'photo',
+    img: '/assets/tile-gym.jpg',
+    imgAlt: '',
   },
   {
     id: 'food',
@@ -65,7 +68,9 @@ const TILES: Tile[] = [
     kicker: 'Offline',
     copy: 'A good break from screens.',
     icon: Mountain,
-    art: 'topo',
+    art: 'photo',
+    img: '/assets/tile-trails.jpg',
+    imgAlt: '',
   },
 ]
 
@@ -90,7 +95,8 @@ function Diagram() {
 export default function OffGrid() {
   return (
     <section id="offgrid" className="section reading-section" aria-labelledby="offgrid-heading">
-      <div className="container">
+      <SectionBackdrop tone="cyan" />
+      <div className="container relative z-10">
         <SectionHeading id="offgrid-heading" text="Off the clock" />
         <p className="section-lede">Gym, trails, a new game, and a very loud cat.</p>
 
