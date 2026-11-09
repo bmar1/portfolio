@@ -14,8 +14,8 @@ export interface Sector {
  */
 export const SECTORS: Sector[] = [
   { id: '02', label: 'ABOUT', target: 'about' },
-  { id: '03', label: 'PROJECTS', target: 'projects' },
   { id: '01', label: 'EXPERIENCE', target: 'experience' },
+  { id: '03', label: 'PROJECTS', target: 'projects' },
   { id: '07', label: 'LEADERSHIP', target: 'leadership' },
   { id: '04', label: 'STACK', target: 'skills' },
   { id: '05', label: 'OFF_GRID', target: 'offgrid' },

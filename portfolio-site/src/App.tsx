@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import BootSequence from './components/BootSequence'
 import { shouldBoot } from './utils/boot'
 import SectorRail from './components/SectorRail'
+import SectorGate from './components/SectorGate'
 import Hero from './sections/Hero'
 import Experience from './sections/Experience'
 import About from './sections/About'
@@ -31,12 +32,19 @@ export default function App() {
 
       <main>
         <Hero bootDone={!booting} />
+        <SectorGate index="02" label="About" district="Heywood" tone="cyan" />
         <About />
-        <Projects />
+        <SectorGate index="01" label="Experience" district="City Center" tone="cyan" />
         <Experience />
+        <SectorGate index="03" label="Projects" district="Watson" />
+        <Projects />
+        <SectorGate index="07" label="Leadership" district="Santo Domingo" tone="magenta" />
         <Leadership />
+        <SectorGate index="04" label="Stack" district="Kabuki" />
         <Skills />
+        <SectorGate index="05" label="Off the clock" district="Badlands" tone="cyan" />
         <OffGrid />
+        <SectorGate index="06" label="Contact" district="Afterlife" tone="magenta" />
         <Contact />
       </main>
     </>
